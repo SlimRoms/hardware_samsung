@@ -42,6 +42,8 @@
 #include "SEC_OSAL_Android.h"
 #endif
 
+#include "csc.h"
+
 #undef  SEC_LOG_TAG
 #define SEC_LOG_TAG    "SEC_VIDEO_DEC"
 #define SEC_LOG_OFF
@@ -1087,6 +1089,31 @@ OMX_ERRORTYPE SEC_OMX_VideoDecodeGetParameter(
         ret = SEC_OSAL_GetANBParameter(hComponent, nParamIndex, ComponentParameterStructure);
     }
         break;
+        /* We need to fake a HAL window format here once using nativebuffer
+         * is enabled
+         */
+    case OMX_IndexParamPortDefinition:
+    {
+        OMX_PARAM_PORTDEFINITIONTYPE *portDefinition = (OMX_PARAM_PORTDEFINITIONTYPE *)ComponentParameterStructure;
+        OMX_U32                       portIndex = portDefinition->nPortIndex;
+        SEC_OMX_BASEPORT             *pSECPort = NULL;
+
+        ret = SEC_OMX_GetParameter(hComponent, nParamIndex, ComponentParameterStructure);
+        if (ret != OMX_ErrorNone) {
+            goto EXIT;
+        }
+
+        /* at this point, GetParameter has done all the verification, we
+         * just dereference things directly here
+         */
+        pSECPort = &pSECComponent->pSECPort[portIndex];
+        if (pSECPort->bIsANBEnabled == OMX_TRUE) {
+            portDefinition->format.video.eColorFormat =
+                (OMX_COLOR_FORMATTYPE)omx_2_hal_pixel_format(portDefinition->format.video.eColorFormat);
+        }
+    }
+        break;
+
 #endif
     default:
     {
