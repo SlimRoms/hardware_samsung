@@ -257,6 +257,7 @@ OMX_ERRORTYPE SEC_MFC_VP8Dec_SetParameter(
         SEC_OMX_BASEPORT             *pSECPort;
         OMX_U32 width, height, size;
         OMX_U32 realWidth, realHeight;
+        OMX_COLOR_FORMATTYPE          old_format;
 
         if (portIndex >= pSECComponent->portParam.nPorts) {
             ret = OMX_ErrorBadPortIndex;
@@ -280,8 +281,16 @@ OMX_ERRORTYPE SEC_MFC_VP8Dec_SetParameter(
             goto EXIT;
         }
 
+        old_format = pSECPort->portDefinition.format.video.eColorFormat;
         SEC_OSAL_Memcpy(&pSECPort->portDefinition, pPortDefinition, pPortDefinition->nSize);
 
+#ifdef USE_ANB
+        /* should not affect the format since in ANB case, the caller
+         * is providing us a HAL format */
+        if (pSECPort->bIsANBEnabled == OMX_TRUE) {
+            pSECPort->portDefinition.format.video.eColorFormat = old_format;
+        }
+#endif
         realWidth = pSECPort->portDefinition.format.video.nFrameWidth;
         realHeight = pSECPort->portDefinition.format.video.nFrameHeight;
         width = ((realWidth + 15) & (~15));
