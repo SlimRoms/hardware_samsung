@@ -27,14 +27,16 @@
 #define ION_IOC_FREE _IOWR(ION_IOC_MAGIC, 1, struct ion_handle_data)
 #define ION_IOC_MAP _IOWR(ION_IOC_MAGIC, 2, struct ion_fd_data)
 #define ION_IOC_SHARE _IOWR(ION_IOC_MAGIC, 4, struct ion_fd_data)
-#define ION_IOC_IMPORT _IOWR(ION_IOC_MAGIC, 5, int)
+#define ION_IOC_IMPORT  _IOWR(ION_IOC_MAGIC, 5, struct ion_fd_data)
 #define ION_IOC_CUSTOM _IOWR(ION_IOC_MAGIC, 6, struct ion_custom_data)
+#define ION_IOC_SYNC	_IOWR(ION_IOC_MAGIC, 7, struct ion_fd_data)
 
 typedef unsigned long ion_handle;
 
 struct ion_allocation_data {
     size_t len;
     size_t align;
+    unsigned int heap_mask;
     unsigned int flags;
     ion_handle *handle;
 };
@@ -81,7 +83,7 @@ void ion_client_destroy(ion_client client)
     close(client);
 }
 
-ion_buffer ion_alloc(ion_client client, size_t len, size_t align, unsigned int flags)
+ion_buffer ion_alloc(ion_client client, size_t len, size_t align, unsigned int heap_mask, unsigned int flags)
 {
     int ret;
     struct ion_handle_data arg_free;
@@ -90,6 +92,7 @@ ion_buffer ion_alloc(ion_client client, size_t len, size_t align, unsigned int f
 
     arg_alloc.len = len;
     arg_alloc.align = align;
+    arg_alloc.heap_mask = heap_mask;
     arg_alloc.flags = flags;
 
     ret = ioctl(client, ION_IOC_ALLOC, &arg_alloc);
@@ -124,19 +127,13 @@ int ion_unmap(void *addr, size_t len)
     return munmap(addr, len);
 }
 
-int ion_msync(ion_client client, ion_buffer buffer, long flags, size_t size, off_t offset)
+int ion_sync(ion_client client, ion_buffer buffer)
 {
-    struct ion_msync_data arg_cdata;
-    arg_cdata.size = size;
-    arg_cdata.dir = (ION_MSYNC_FLAGS) flags;
-    arg_cdata.fd = buffer;
-    arg_cdata.offset = offset;
+    struct ion_fd_data data;
 
-    struct ion_custom_data arg_custom;
-    arg_custom.cmd = ION_EXYNOS_CUSTOM_MSYNC;
-    arg_custom.arg = (unsigned long) &arg_cdata;
+    data.fd = buffer;
 
-    return ioctl(client, ION_IOC_CUSTOM, &arg_custom);
+    return ioctl(client, ION_IOC_SYNC, &data);
 }
 
 ion_phys_addr_t ion_getphys(ion_client client, ion_buffer buffer)
@@ -161,7 +158,7 @@ int createIONMem(struct secion_param *param, size_t size, unsigned int flags)
         goto fail;
     }
 
-    if(param->buffer < 0 && (param->buffer = ion_alloc(param->client, size, 0x10000, flags)) < 0) {
+    if(param->buffer < 0 && (param->buffer = ion_alloc(param->client, size, 0x10000, flags, 0)) < 0) {
         ALOGE("createIONMem:: ion_alloc fail\n");
         goto fail;
     }
