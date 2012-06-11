@@ -265,7 +265,7 @@ static int gralloc_alloc_buffer(alloc_device_t* dev, size_t size, int usage,
             ion_flags = ION_HEAP_EXYNOS_CONTIG_MASK;
         }
 
-        ion_fd = ion_alloc(m->ion_client, size, 0, ion_flags);
+        ion_fd = ion_alloc(m->ion_client, size, 0, ion_flags, 0);
         if (ion_fd < 0) {
             ALOGE("%s Failed to ion_alloc", __func__);
             return -1;

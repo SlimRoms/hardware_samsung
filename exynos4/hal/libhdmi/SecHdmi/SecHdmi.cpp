@@ -412,7 +412,7 @@ bool SecHdmi::create(int width, int height)
         goto CREATE_FAIL;
     }
 #if defined(BOARD_USES_FIMGAPI)
-    IonFd = ion_alloc(IonClient, g2d_reserved_memory_size * HDMI_G2D_OUTPUT_BUF_NUM, 0, ION_HEAP_EXYNOS_MASK);
+    IonFd = ion_alloc(IonClient, g2d_reserved_memory_size * HDMI_G2D_OUTPUT_BUF_NUM, 0, ION_HEAP_EXYNOS_MASK, 0);
 
     if (IonFd < 0) {
         ALOGE("%s::ION memory allocation failed", __func__);
