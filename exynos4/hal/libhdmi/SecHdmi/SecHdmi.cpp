@@ -863,7 +863,7 @@ bool SecHdmi::flush(int srcW, int srcH, int srcColorFormat,
                             srcYAddr, srcCbAddr,
                             mHdmiDstWidth, mHdmiDstHeight);
 #endif
-        } else if (srcColorFormat == HAL_PIXEL_FORMAT_YCrCb_420_SP ||
+        } else if (srcColorFormat == HAL_PIXEL_FORMAT_EXYNOS_YCrCb_420_SP ||
                  srcColorFormat == HAL_PIXEL_FORMAT_CUSTOM_YCrCb_420_SP) {
 #if defined(BOARD_USE_V4L2)
             mMixerBuffer[hdmiLayer][0].virt.extP[0] = (char *)srcYAddr;
@@ -1344,7 +1344,7 @@ bool SecHdmi::m_reset(int w, int h, int colorFormat, int hdmiLayer, int hwcLayer
         int videoSrcColorFormat = colorFormat;
 
         if (preVideoSrcColorFormat != HAL_PIXEL_FORMAT_YCbCr_420_SP &&
-            preVideoSrcColorFormat != HAL_PIXEL_FORMAT_YCrCb_420_SP &&
+            preVideoSrcColorFormat != HAL_PIXEL_FORMAT_EXYNOS_YCrCb_420_SP &&
             preVideoSrcColorFormat != HAL_PIXEL_FORMAT_CUSTOM_YCbCr_420_SP &&
             preVideoSrcColorFormat != HAL_PIXEL_FORMAT_CUSTOM_YCrCb_420_SP &&
             preVideoSrcColorFormat != HAL_PIXEL_FORMAT_CUSTOM_YCbCr_420_SP_TILED) {
@@ -1354,7 +1354,7 @@ bool SecHdmi::m_reset(int w, int h, int colorFormat, int hdmiLayer, int hwcLayer
 
         if (hdmiLayer == HDMI_LAYER_VIDEO) {
             if (colorFormat != HAL_PIXEL_FORMAT_YCbCr_420_SP &&
-                colorFormat != HAL_PIXEL_FORMAT_YCrCb_420_SP &&
+                colorFormat != HAL_PIXEL_FORMAT_EXYNOS_YCrCb_420_SP &&
                 colorFormat != HAL_PIXEL_FORMAT_CUSTOM_YCbCr_420_SP &&
                 colorFormat != HAL_PIXEL_FORMAT_CUSTOM_YCrCb_420_SP &&
                 colorFormat != HAL_PIXEL_FORMAT_CUSTOM_YCbCr_420_SP_TILED) {

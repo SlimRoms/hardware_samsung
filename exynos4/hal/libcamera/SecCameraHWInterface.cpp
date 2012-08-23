@@ -485,7 +485,7 @@ status_t CameraHardwareSec::setPreviewWindow(preview_stream_ops *w)
     ALOGV("%s: preview format %s", __func__, str_preview_format);
     mFrameSizeDelta = 16;
 
-    hal_pixel_format = HAL_PIXEL_FORMAT_YV12; // default
+    hal_pixel_format = HAL_PIXEL_FORMAT_EXYNOS_YV12; // default
 
     if (!strcmp(str_preview_format,
                 CameraParameters::PIXEL_FORMAT_RGB565)) {
@@ -497,10 +497,10 @@ status_t CameraHardwareSec::setPreviewWindow(preview_stream_ops *w)
         mFrameSizeDelta = 0;
     } else if (!strcmp(str_preview_format,
                      CameraParameters::PIXEL_FORMAT_YUV420SP)) {
-        hal_pixel_format = HAL_PIXEL_FORMAT_YCrCb_420_SP;
+        hal_pixel_format = HAL_PIXEL_FORMAT_EXYNOS_YCrCb_420_SP;
     } else if (!strcmp(str_preview_format,
                      CameraParameters::PIXEL_FORMAT_YUV420P))
-        hal_pixel_format = HAL_PIXEL_FORMAT_YV12; // HACK
+        hal_pixel_format = HAL_PIXEL_FORMAT_EXYNOS_YV12; // HACK
 
 #ifdef USE_EGL
 #ifdef BOARD_USE_V4L2_ION

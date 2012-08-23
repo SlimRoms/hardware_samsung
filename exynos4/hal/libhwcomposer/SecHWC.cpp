@@ -151,9 +151,9 @@ static int set_src_dst_img_rect(hwc_layer_1_t *cur,
     src_img->mem_type = HWC_VIRT_MEM_TYPE;
 
     switch (src_img->format) {
-    case HAL_PIXEL_FORMAT_YV12:             /* To support video editor */
+    case HAL_PIXEL_FORMAT_EXYNOS_YV12:             /* To support video editor */
     case HAL_PIXEL_FORMAT_YCbCr_420_P:      /* To support SW codec     */
-    case HAL_PIXEL_FORMAT_YCrCb_420_SP:
+    case HAL_PIXEL_FORMAT_EXYNOS_YCrCb_420_SP:
     case HAL_PIXEL_FORMAT_YCbCr_420_SP:
     case HAL_PIXEL_FORMAT_CUSTOM_YCbCr_420_SP:
     case HAL_PIXEL_FORMAT_CUSTOM_YCrCb_420_SP:
@@ -340,9 +340,9 @@ static int get_hwc_compos_decision(hwc_layer_1_t* cur, int iter, int win_cnt)
         case HAL_PIXEL_FORMAT_CUSTOM_YCbCr_420_SP_TILED:
             compositionType = HWC_OVERLAY;
             break;
-        case HAL_PIXEL_FORMAT_YV12:                 /* YCrCb_420_P */
+        case HAL_PIXEL_FORMAT_EXYNOS_YV12:                 /* YCrCb_420_P */
         case HAL_PIXEL_FORMAT_YCbCr_420_P:
-        case HAL_PIXEL_FORMAT_YCrCb_420_SP:
+        case HAL_PIXEL_FORMAT_EXYNOS_YCrCb_420_SP:
         case HAL_PIXEL_FORMAT_YCbCr_420_SP:
             if ((prev_handle->usage & GRALLOC_USAGE_HWC_HWOVERLAY) &&
                  (cur->blending == HWC_BLENDING_NONE))
@@ -877,9 +877,9 @@ static int hwc_set(hwc_composer_device_1_t *dev,
                                     android::SecHdmiClient::HDMI_MODE_VIDEO,
                                     ctx->num_of_hwc_layer);
         } else if ((src_img.format == HAL_PIXEL_FORMAT_YCbCr_420_SP) ||
-                    (src_img.format == HAL_PIXEL_FORMAT_YCrCb_420_SP) ||
+                    (src_img.format == HAL_PIXEL_FORMAT_EXYNOS_YCrCb_420_SP) ||
                     (src_img.format == HAL_PIXEL_FORMAT_YCbCr_420_P) ||
-                    (src_img.format == HAL_PIXEL_FORMAT_YV12)) {
+                    (src_img.format == HAL_PIXEL_FORMAT_EXYNOS_YV12)) {
             mHdmiClient->blit2Hdmi(src_work_rect.w, src_work_rect.h,
                                     src_img.format,
                                     (unsigned int)ctx->fimc.params.src.buf_addr_phy_rgb_y,

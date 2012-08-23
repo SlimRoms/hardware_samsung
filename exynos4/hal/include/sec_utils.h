@@ -78,7 +78,7 @@ inline int HAL_PIXEL_FORMAT_2_V4L2_PIX(int HAL_PIXEL_FORMAT)
         V4L2_PIX = V4L2_PIX_FMT_RGB444;
         break;
 
-    case HAL_PIXEL_FORMAT_YV12:
+    case HAL_PIXEL_FORMAT_EXYNOS_YV12:
     case HAL_PIXEL_FORMAT_YCbCr_420_P:
         V4L2_PIX = V4L2_PIX_FMT_YUV420;
         break;
@@ -112,7 +112,7 @@ inline int HAL_PIXEL_FORMAT_2_V4L2_PIX(int HAL_PIXEL_FORMAT)
         V4L2_PIX = V4L2_PIX_FMT_NV16;
         break;
 
-    case HAL_PIXEL_FORMAT_YCrCb_420_SP:
+    case HAL_PIXEL_FORMAT_EXYNOS_YCrCb_420_SP:
     case HAL_PIXEL_FORMAT_CUSTOM_YCrCb_420_SP:
         V4L2_PIX = V4L2_PIX_FMT_NV21;
         break;
@@ -254,8 +254,8 @@ inline unsigned int FRAME_SIZE(int HAL_PIXEL_FORMAT, int w, int h)
         break;
 
     // 12bpp
-    case HAL_PIXEL_FORMAT_YV12:
-    case HAL_PIXEL_FORMAT_YCrCb_420_SP:
+    case HAL_PIXEL_FORMAT_EXYNOS_YV12:
+    case HAL_PIXEL_FORMAT_EXYNOS_YCrCb_420_SP:
     case HAL_PIXEL_FORMAT_YCbCr_420_P:
     case HAL_PIXEL_FORMAT_YCbCr_420_I:
     case HAL_PIXEL_FORMAT_CbYCrY_420_I:

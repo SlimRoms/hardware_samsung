@@ -464,10 +464,10 @@ static int alloc_device_alloc(alloc_device_t* dev, int w, int h, int format,
     size_t stride_raw = 0;
 
     if (format == HAL_PIXEL_FORMAT_YCbCr_420_SP ||
-        format == HAL_PIXEL_FORMAT_YCrCb_420_SP ||
+        format == HAL_PIXEL_FORMAT_EXYNOS_YCrCb_420_SP ||
         format == HAL_PIXEL_FORMAT_YCbCr_422_SP ||
         format == HAL_PIXEL_FORMAT_YCbCr_420_P  ||
-        format == HAL_PIXEL_FORMAT_YV12 ||
+        format == HAL_PIXEL_FORMAT_EXYNOS_YV12 ||
         format == HAL_PIXEL_FORMAT_CUSTOM_YCrCb_420_SP ||
         format == HAL_PIXEL_FORMAT_CUSTOM_YCbCr_420_SP_TILED ||
         format == GGL_PIXEL_FORMAT_L_8 ||
@@ -498,7 +498,7 @@ static int alloc_device_alloc(alloc_device_t* dev, int w, int h, int format,
         vstride = EXYNOS4_ALIGN(h, 16); //(h + 15) & ~15;
 
         switch (format) {
-        case HAL_PIXEL_FORMAT_YV12: //0x32315659
+        case HAL_PIXEL_FORMAT_EXYNOS_YV12: //0x32315659
             l_usage |= GRALLOC_USAGE_HW_FIMC1;
             ALOGD("%s added GRALLOC_USAGE_HW_FIMC1 because of YV12", __func__);
 
@@ -521,7 +521,7 @@ static int alloc_device_alloc(alloc_device_t* dev, int w, int h, int format,
         case HAL_PIXEL_FORMAT_CUSTOM_YCrCb_420_SP: //0x111
         case HAL_PIXEL_FORMAT_CUSTOM_YCbCr_420_SP_TILED: //0x112
         case HAL_PIXEL_FORMAT_YCbCr_420_SP: //0x105
-        case HAL_PIXEL_FORMAT_YCrCb_420_SP: //0x11
+        case HAL_PIXEL_FORMAT_EXYNOS_YCrCb_420_SP: //0x11
         case HAL_PIXEL_FORMAT_YCbCr_420_P: //0x101
             //lc_20a4
             size = (stride * vstride) + ((EXYNOS4_ALIGN(w/2,16) * EXYNOS4_ALIGN(h/2,16)) * 2);
