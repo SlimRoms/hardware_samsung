@@ -599,7 +599,7 @@ static int memcpy_rect(void *dst, void *src, int fullW, int fullH, int realW, in
             (unsigned int)srcY,(unsigned int)srcCb,(unsigned int)srcCr,
             cbRealW, cbRealH);
 
-    if (format == HAL_PIXEL_FORMAT_YV12) { //YV12(Y,Cr,Cv)
+    if (format == HAL_PIXEL_FORMAT_EXYNOS_YV12) { //YV12(Y,Cr,Cv)
         planes = 3;
 //This is code for VE, deleted temporory by SSONG 2011.09.22
 // This will be enabled later.
@@ -616,7 +616,7 @@ static int memcpy_rect(void *dst, void *src, int fullW, int fullH, int realW, in
 */
     } else if ((format == HAL_PIXEL_FORMAT_YCbCr_420_P)) {
         planes = 3;
-    } else if (format == HAL_PIXEL_FORMAT_YCbCr_420_SP || format == HAL_PIXEL_FORMAT_YCrCb_420_SP) {
+    } else if (format == HAL_PIXEL_FORMAT_YCbCr_420_SP || format == HAL_PIXEL_FORMAT_EXYNOS_YCrCb_420_SP) {
         planes = 2;
     } else {
         SEC_HWC_Log(HWC_LOG_ERROR, "use default memcpy instead of memcpy_rect");
@@ -1100,9 +1100,9 @@ static int runFimcCore(struct hwc_context_t *ctx,
     case HAL_PIXEL_FORMAT_CUSTOM_CbYCrY_422_I:
     case HAL_PIXEL_FORMAT_CUSTOM_CrYCbY_422_I:
     case HAL_PIXEL_FORMAT_RGB_565:
-    case HAL_PIXEL_FORMAT_YV12:
+    case HAL_PIXEL_FORMAT_EXYNOS_YV12:
     default:
-        if (src_img->format == HAL_PIXEL_FORMAT_YV12){
+        if (src_img->format == HAL_PIXEL_FORMAT_EXYNOS_YV12){
             src_cbcr_order = false;
         }
 
@@ -1252,9 +1252,9 @@ int runFimc(struct hwc_context_t *ctx,
 
 int check_yuv_format(unsigned int color_format) {
     switch (color_format) {
-    case HAL_PIXEL_FORMAT_YV12:
+    case HAL_PIXEL_FORMAT_EXYNOS_YV12:
     case HAL_PIXEL_FORMAT_YCbCr_422_SP:
-    case HAL_PIXEL_FORMAT_YCrCb_420_SP:
+    case HAL_PIXEL_FORMAT_EXYNOS_YCrCb_420_SP:
     case HAL_PIXEL_FORMAT_YCbCr_422_I:
     case HAL_PIXEL_FORMAT_YCbCr_422_P:
     case HAL_PIXEL_FORMAT_YCbCr_420_P:
