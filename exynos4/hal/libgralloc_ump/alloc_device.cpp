@@ -499,6 +499,7 @@ static int alloc_device_alloc(alloc_device_t* dev, int w, int h, int format,
 
         switch (format) {
         case HAL_PIXEL_FORMAT_YV12: //0x32315659
+            *stride = ALIGN(w, 32);
             l_usage |= GRALLOC_USAGE_HW_FIMC1;
             ALOGD("%s added GRALLOC_USAGE_HW_FIMC1 because of YV12", __func__);
 
