@@ -502,6 +502,12 @@ OMX_ERRORTYPE SEC_OSAL_SetANBParameter(
             goto EXIT;
         }
 
+        if (portIndex == OUTPUT_PORT_INDEX) {
+            SEC_OSAL_Log(SEC_LOG_ERROR, "%s: metadata is not supported on output port", __func__);
+            ret = OMX_ErrorBadPortIndex;
+            goto EXIT;
+        }
+
         pSECPort = &pSECComponent->pSECPort[portIndex];
         if (CHECK_PORT_TUNNELED(pSECPort) && CHECK_PORT_BUFFER_SUPPLIER(pSECPort)) {
             ret = OMX_ErrorBadPortIndex;
