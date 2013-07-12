@@ -38,7 +38,7 @@
 
 /* VP8 */
 #define SEC_OMX_COMPONENT_VP8_DEC "OMX.SEC.VP8.Decoder"
-#define SEC_OMX_COMPONENT_VP8_DEC_ROLE "video_decoder.vpx"
+#define SEC_OMX_COMPONENT_VP8_DEC_ROLE "video_decoder.vp8"
 
 
 #ifdef __cplusplus
