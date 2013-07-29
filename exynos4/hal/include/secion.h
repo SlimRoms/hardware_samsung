@@ -166,8 +166,9 @@ int ion_unmap(void *addr, size_t len);
  */
 int ion_sync(ion_client client, ion_buffer buffer);
 
+int ion_incRef(int fd, int share_fd, unsigned long **handle);
 
-
+int ion_decRef(int fd, unsigned long *handle);
 
 ion_phys_addr_t ion_getphys(ion_client client, ion_buffer buffer);
 int createIONMem(struct secion_param *param, size_t size, unsigned int flags);
