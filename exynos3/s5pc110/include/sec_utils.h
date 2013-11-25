@@ -71,15 +71,6 @@ inline int HAL_PIXEL_FORMAT_2_V4L2_PIX(int HAL_PIXEL_FORMAT)
         //V4L2_PIX = V4L2_PIX_FMT_BGR32; // this is not proper on fimc.
         V4L2_PIX = V4L2_PIX_FMT_RGB32;
         break;
-
-    case HAL_PIXEL_FORMAT_RGBA_5551:
-        V4L2_PIX = V4L2_PIX_FMT_RGB555X;
-        break;
-
-    case HAL_PIXEL_FORMAT_RGBA_4444:
-        V4L2_PIX = V4L2_PIX_FMT_RGB444;
-        break;
-
     case HAL_PIXEL_FORMAT_YV12:
     case HAL_PIXEL_FORMAT_YCbCr_420_P:
         V4L2_PIX = V4L2_PIX_FMT_YUV420;
@@ -162,14 +153,6 @@ inline int V4L2_PIX_2_HAL_PIXEL_FORMAT(int V4L2_PIX)
         HAL_PIXEL_FORMAT = HAL_PIXEL_FORMAT_BGRA_8888;
         break;
 
-    case V4L2_PIX_FMT_RGB555X:
-        HAL_PIXEL_FORMAT = HAL_PIXEL_FORMAT_RGBA_5551;
-        break;
-
-    case V4L2_PIX_FMT_RGB444:
-        HAL_PIXEL_FORMAT = HAL_PIXEL_FORMAT_RGBA_4444;
-        break;
-
     case V4L2_PIX_FMT_YUV420:
         //HAL_PIXEL_FORMAT = HAL_PIXEL_FORMAT_YV12;
         HAL_PIXEL_FORMAT = HAL_PIXEL_FORMAT_YCbCr_420_P;
@@ -245,7 +228,7 @@ inline unsigned int FRAME_SIZE(int HAL_PIXEL_FORMAT, int w, int h)
     switch (HAL_PIXEL_FORMAT) {
     // 16bpp
     case HAL_PIXEL_FORMAT_RGB_565:
-    case HAL_PIXEL_FORMAT_RGBA_5551:
+    //case HAL_PIXEL_FORMAT_RGBA_5551:
     //case HAL_PIXEL_FORMAT_ARGB_1555:
     //case HAL_PIXEL_FORMAT_BGRA_5551:
     //case HAL_PIXEL_FORMAT_ABGR_1555:
@@ -255,7 +238,7 @@ inline unsigned int FRAME_SIZE(int HAL_PIXEL_FORMAT, int w, int h)
     //case HAL_PIXEL_FORMAT_BGRX_5551:
     //case HAL_PIXEL_FORMAT_XBGR_1555:
 
-    case HAL_PIXEL_FORMAT_RGBA_4444:
+    //case HAL_PIXEL_FORMAT_RGBA_4444:
     //case HAL_PIXEL_FORMAT_ARGB_4444:
     //case HAL_PIXEL_FORMAT_BGRA_4444:
     //case HAL_PIXEL_FORMAT_ABGR_4444:

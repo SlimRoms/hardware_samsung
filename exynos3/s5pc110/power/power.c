@@ -166,17 +166,11 @@ static void s5pc110_power_hint(struct power_module *module, power_hint_t hint,
     struct s5pc110_power_module *s5pc110 = (struct s5pc110_power_module *) module;
     char buf[80];
     int len;
-    int duration = 1;
 
     switch (hint) {
     case POWER_HINT_INTERACTION:
-    case POWER_HINT_CPU_BOOST:
         if (boostpulse_open(s5pc110) >= 0) {
-            if (data != NULL)
-                duration = (int) data;
-
-            snprintf(buf, sizeof(buf), "%d", duration);
-            len = write(s5pc110->boostpulse_fd, buf, strlen(buf));
+            len = write(s5pc110->boostpulse_fd, "1", 1);
 
             if (len < 0) {
                 strerror_r(errno, buf, sizeof(buf));
