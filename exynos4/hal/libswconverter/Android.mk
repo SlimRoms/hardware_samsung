@@ -13,7 +13,7 @@ LOCAL_SRC_FILES := \
 	csc_interleave_memcpy_neon.s
 
 LOCAL_C_INCLUDES := \
-	$(TOP)/$(TARGET_OMX_PATH)/include/khronos \
+	$(TOP)/frameworks/native/include/media/openmax \
 	$(TOP)/$(TARGET_OMX_PATH)/include/sec \
 	$(TOP)/$(TARGET_HAL_PATH)/include \
 	$(TOP)/$(TARGET_HAL_PATH)/libhwconverter

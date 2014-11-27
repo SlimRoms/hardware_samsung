@@ -27,8 +27,8 @@
 #ifndef SEC_OMX_DEF
 #define SEC_OMX_DEF
 
-#include "OMX_Types.h"
-#include "OMX_IVCommon.h"
+#include <OMX_Types.h>
+#include <OMX_IVCommon.h>
 
 #define VERSIONMAJOR_NUMBER                1
 #define VERSIONMINOR_NUMBER                0
@@ -114,7 +114,6 @@ typedef enum _SEC_OMX_COLOR_FORMATTYPE {
     OMX_SEC_COLOR_FormatNV12TPhysicalAddress = 0x7F000001, /**< Reserved region for introducing Vendor Extensions */
     OMX_SEC_COLOR_FormatNV12LPhysicalAddress = 0x7F000002,
     OMX_SEC_COLOR_FormatNV12LVirtualAddress = 0x7F000003,
-    OMX_SEC_COLOR_FormatNV12Tiled            = 0x7FC00002,  /* 0x7FC00002 */
 #ifdef S3D_SUPPORT
     OMX_SEC_COLOR_FormatNV12Tiled_SBS_LR     = 0x7FC00003,  /* 0x7FC00003 */
     OMX_SEC_COLOR_FormatNV12Tiled_SBS_RL     = 0x7FC00004,  /* 0x7FC00004 */
@@ -131,8 +130,6 @@ typedef enum _SEC_OMX_COLOR_FORMATTYPE {
 #endif
     /* for Android Native Window */
     OMX_SEC_COLOR_FormatANBYUV420SemiPlanar  = 0x100,
-    /* for Android SurfaceMediaSource*/
-    OMX_COLOR_FormatAndroidOpaque            = 0x7F000789
 }SEC_OMX_COLOR_FORMATTYPE;
 
 typedef enum _SEC_OMX_SUPPORTFORMAT_TYPE

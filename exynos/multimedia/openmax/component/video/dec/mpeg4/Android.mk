@@ -47,7 +47,7 @@ endif
 #LOCAL_SHARED_LIBRARIES += libion
 #endif
 
-LOCAL_C_INCLUDES := $(SEC_OMX_INC)/khronos \
+LOCAL_C_INCLUDES := $(OMX_INC) \
 	$(SEC_OMX_INC)/sec \
 	$(SEC_OMX_TOP)/osal \
 	$(SEC_OMX_TOP)/core \

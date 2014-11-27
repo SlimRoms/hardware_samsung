@@ -19,7 +19,7 @@ LOCAL_SRC_FILES := \
 	csc_fimc.cpp
 
 LOCAL_C_INCLUDES := \
-	$(TOP)/$(TARGET_OMX_PATH)/include/khronos \
+	$(OMX_INC) \
 	$(TOP)/$(TARGET_OMX_PATH)/include/sec \
 	$(TOP)/$(TARGET_HAL_PATH)/include \
 	$(TOP)/$(TARGET_HAL_PATH)/libhwconverter
