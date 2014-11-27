@@ -17,7 +17,7 @@ LOCAL_STATIC_LIBRARIES := libsecosal libsecbasecomponent
 LOCAL_SHARED_LIBRARIES := libc libdl libcutils libutils \
 	libSEC_OMX_Resourcemanager
 
-LOCAL_C_INCLUDES := $(SEC_OMX_INC)/khronos \
+LOCAL_C_INCLUDES := $(OMX_INC) \
 	$(SEC_OMX_INC)/sec \
 	$(SEC_OMX_TOP)/osal \
 	$(SEC_OMX_TOP)/component/common
