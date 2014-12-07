@@ -1764,8 +1764,8 @@ static void dispatchSetInitialAttachApn(Parcel &p, RequestInfo *pRI)
     pf.password = strdupReadString(p);
 
     startRequest;
-    appendPrintBuf("%sapn=%s, protocol=%s, auth_type=%d, username=%s, password=%s",
-            printBuf, pf.apn, pf.protocol, pf.auth_type, pf.username, pf.password);
+    appendPrintBuf("%sapn=%s, protocol=%s, authtype=%d, username=%s, password=%s",
+            printBuf, pf.apn, pf.protocol, pf.authtype, pf.username, pf.password);
     closeRequest;
     printRequest(pRI->token, pRI->pCI->requestNumber);
 
