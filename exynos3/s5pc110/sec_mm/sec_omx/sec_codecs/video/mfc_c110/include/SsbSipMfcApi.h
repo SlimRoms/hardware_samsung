@@ -26,7 +26,7 @@
 #ifdef BIG_MMAP_BUFFER_SIZE
 #define MMAP_BUFFER_SIZE_MMAP          (62*1024*1024)
 #else
-#define MMAP_BUFFER_SIZE_MMAP          (20*1024*1024)
+#define MMAP_BUFFER_SIZE_MMAP          (35328*1024) // 34.5*1024*1024
 #endif // BIG_MMAP_BUFFER_SIZE
 
 #define S5PC110_MFC_DEV_NAME           "/dev/s3c-mfc"

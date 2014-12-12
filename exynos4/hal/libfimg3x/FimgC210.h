@@ -36,7 +36,7 @@
 #include <sys/poll.h>
 #include <sys/stat.h>
 
-#include <linux/android_pmem.h>
+//#include <linux/android_pmem.h>
 #include <utils/threads.h>
 #include <utils/StopWatch.h>
 
