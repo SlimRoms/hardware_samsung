@@ -136,3 +136,9 @@ enum hdmi_layer {
     HDMI_LAYER_GRAPHIC_1,
     HDMI_LAYER_MAX,
 };
+
+enum hdmi_s3d_mode {
+    HDMI_2D = 0,
+    HDMI_S3D_TB,
+    HDMI_S3D_SBS,
+};

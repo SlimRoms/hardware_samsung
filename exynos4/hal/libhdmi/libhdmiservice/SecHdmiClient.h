@@ -34,8 +34,8 @@
 #include <cutils/log.h>
 #include <binder/IBinder.h>
 #include <binder/IServiceManager.h>
-#include <surfaceflinger/ISurfaceComposer.h>
-#include <surfaceflinger/SurfaceComposerClient.h>
+#include <gui/ISurfaceComposer.h>
+#include <gui/SurfaceComposerClient.h>
 #include "ISecTVOut.h"
 
 #define GETSERVICETIMEOUT (5)
@@ -52,6 +52,12 @@ public:
         HDMI_MODE_VIDEO,
     };
 
+    enum HDMI_S3D_MODE {
+        HDMI_2D = 0,
+        HDMI_S3D_TB,
+        HDMI_S3D_SBS,
+    };
+
 private:
     SecHdmiClient();
     virtual ~SecHdmiClient();
@@ -60,21 +66,43 @@ private:
 public:
         static SecHdmiClient * getInstance(void);
         void setHdmiCableStatus(int status);
+        int getHdmiCableStatus(void);
+        int getS3DSupport(void);
+        int getForceMirrorMode(void);
+        void setUITransform(int transform);
+        void setMirrorWithVideoMode(int mirror);
+        int getMirrorWithVideoMode(void);
+        int getVideoTransform(void);
+        int getVideoMode(void);
+        void setExtDispLayerNum(int num);
+        void disableLayer(unsigned int layer);
+        void enableLayer(unsigned int layer);
+        int waitForVsync(void);
+        void setVideoTransform(int transform);
         void setHdmiMode(int mode);
-        void setHdmiResolution(int resolution);
+        void setHdmiResolution(int resolution, HDMI_S3D_MODE s3dMode);
+        int getHdmiResolution(void);
         void setHdmiHdcp(int enHdcp);
         void setHdmiRotate(int rotVal, uint32_t hwcLayer);
         void setHdmiHwcLayer(uint32_t hwcLayer);
         void setHdmiEnable(uint32_t enable);
-        virtual void blit2Hdmi(uint32_t w, uint32_t h,
-                                        uint32_t colorFormat,
-                                        uint32_t physYAddr,
+        virtual void blit2Hdmi(int32_t w, int32_t h,
+                                        int32_t colorFormat,
+                                        int32_t physYAddr,
                                         uint32_t physCbAddr,
                                         uint32_t physCrAddr,
                                         uint32_t dstX,
                                         uint32_t dstY,
                                         uint32_t hdmiLayer,
-                                        uint32_t num_of_hwc_layer);
+                                        uint32_t num_of_hwc_layer,
+                                        uint32_t a,
+                                        uint32_t b,
+                                        uint32_t c,
+                                        uint32_t d,
+                                        uint32_t e,
+                                        uint32_t f,
+                                        uint32_t g,
+                                        uint32_t hh);
 
 private:
         sp<ISecTVOut> m_getSecTVOutService(void);

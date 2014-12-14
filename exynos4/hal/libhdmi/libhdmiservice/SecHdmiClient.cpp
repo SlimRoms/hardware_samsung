@@ -54,6 +54,89 @@ void SecHdmiClient::setHdmiCableStatus(int status)
         g_SecTVOutService->setHdmiCableStatus(status);
 }
 
+int SecHdmiClient::getHdmiCableStatus(void)
+{
+    //ALOGD("%s HDMI status: %d\n", __func__, status);
+    int cableStatus = 0;
+
+    if (g_SecTVOutService != 0)
+        cableStatus = g_SecTVOutService->getHdmiCableStatus();
+
+    return cableStatus;
+}
+
+int SecHdmiClient::getS3DSupport(void)
+{
+    //TODO: dhiru1602: This is just a placeholder for HWC
+
+    return 0;
+}
+
+int SecHdmiClient::getForceMirrorMode(void)
+{
+    //TODO: dhiru1602: This is just a placeholder for HWC
+
+    return 0;
+}
+
+void SecHdmiClient::setUITransform(int transform)
+{
+    //TODO: dhiru1602: This is just a placeholder for HWC
+}
+
+void SecHdmiClient::setMirrorWithVideoMode(int mirror)
+{
+    //TODO: dhiru1602: This is just a placeholder for HWC
+}
+
+int SecHdmiClient::getMirrorWithVideoMode(void)
+{
+    //TODO: dhiru1602: This is just a placeholder for HWC
+
+    return 0;
+}
+
+int SecHdmiClient::getVideoTransform(void)
+{
+    //TODO: dhiru1602: This is just a placeholder for HWC
+
+    return 0;
+}
+
+int SecHdmiClient::getVideoMode(void)
+{
+    //TODO: dhiru1602: This is just a placeholder for HWC
+
+    return 0;
+}
+
+void SecHdmiClient::setExtDispLayerNum(int num)
+{
+    //TODO: dhiru1602: This is just a placeholder for HWC
+}
+
+void SecHdmiClient::disableLayer(unsigned int layer)
+{
+    //TODO: dhiru1602: This is just a placeholder for HWC
+}
+
+void SecHdmiClient::enableLayer(unsigned int layer)
+{
+    //TODO: dhiru1602: This is just a placeholder for HWC
+}
+
+int SecHdmiClient::waitForVsync(void)
+{
+    //TODO: dhiru1602: This is just a placeholder for HWC
+
+    return 0;
+}
+
+void SecHdmiClient::setVideoTransform(int transform)
+{
+    //TODO: dhiru1602: This is just a placeholder for HWC
+}
+
 void SecHdmiClient::setHdmiMode(int mode)
 {
     //ALOGD("%s HDMI Mode: %d\n", __func__, mode);
@@ -62,12 +145,22 @@ void SecHdmiClient::setHdmiMode(int mode)
         g_SecTVOutService->setHdmiMode(mode);
 }
 
-void SecHdmiClient::setHdmiResolution(int resolution)
+void SecHdmiClient::setHdmiResolution(int resolution, HDMI_S3D_MODE s3dMode)
 {
     //ALOGD("%s HDMI Resolution: %d\n", __func__, resolution);
 
     if (g_SecTVOutService != 0)
-        g_SecTVOutService->setHdmiResolution(resolution);
+        g_SecTVOutService->setHdmiResolution(resolution, s3dMode);
+}
+
+int SecHdmiClient::getHdmiResolution(void)
+{
+    int resolution = 0;
+
+    if (g_SecTVOutService != 0)
+        resolution = g_SecTVOutService->getHdmiResolution();
+
+    return resolution;
 }
 
 void SecHdmiClient::setHdmiHdcp(int enHdcp)
@@ -102,18 +195,26 @@ void SecHdmiClient::setHdmiEnable(uint32_t enable)
         mEnable = enable;
 }
 
-void SecHdmiClient::blit2Hdmi(uint32_t w, uint32_t h,
-                                uint32_t colorFormat,
-                                uint32_t physYAddr,
+void SecHdmiClient::blit2Hdmi(int32_t w, int32_t h,
+                                int32_t colorFormat,
+                                int32_t physYAddr,
                                 uint32_t physCbAddr,
                                 uint32_t physCrAddr,
                                 uint32_t dstX,
                                 uint32_t dstY,
                                 uint32_t hdmiLayer,
-                                uint32_t num_of_hwc_layer)
+                                uint32_t num_of_hwc_layer,
+                                uint32_t a,
+                                uint32_t b,
+                                uint32_t c,
+                                uint32_t d,
+                                uint32_t e,
+                                uint32_t f,
+                                uint32_t g,
+                                uint32_t hh)
 {
     if (g_SecTVOutService != 0 && mEnable == 1)
-        g_SecTVOutService->blit2Hdmi(w, h, colorFormat, physYAddr, physCbAddr, physCrAddr, dstX, dstY, hdmiLayer, num_of_hwc_layer);
+        g_SecTVOutService->blit2Hdmi(w, h, colorFormat, physYAddr, physCbAddr, physCrAddr, dstX, dstY, hdmiLayer, num_of_hwc_layer, a, b, c, d, e, f, g, hh);
 }
 
 sp<ISecTVOut> SecHdmiClient::m_getSecTVOutService(void)

@@ -1494,12 +1494,12 @@ int hdmi_set_g_scaling(int layer,
         cur_g2d_address = (unsigned int)dst_addr;
         prev_src_addr = src_address;
 
-        srcAddr = {(addr_space)ADDR_USER, (unsigned long)src_address, src_w * src_h * 4, 1, 0};
-        srcImage = {srcAddr, srcAddr, src_w, src_h, src_w*4, AX_RGB, CF_ARGB_8888};
+        srcAddr = {(addr_space)ADDR_USER, (unsigned long)src_address};
+        srcImage = { src_w, src_h, src_w*4, AX_RGB, CF_ARGB_8888, srcAddr, srcAddr, srcRect, false };
         srcRect = {0, 0, src_w, src_h};
 
-        dstAddr = {(addr_space)ADDR_USER, (unsigned long)dst_addr, dst_w * dst_h * dst_bpp, 1, 0};
-        dstImage = {dstAddr, dstAddr, dst_w, dst_h, dst_w*dst_bpp, AX_RGB, (color_format)dst_color_format};
+        dstAddr = {(addr_space)ADDR_USER, (unsigned long)dst_addr};
+        dstImage = { dst_w, dst_h, dst_w*dst_bpp, AX_RGB, (color_format)dst_color_format, dstAddr, dstAddr, dstRect, false};
         dstRect = {0, 0, dst_w, dst_h};
         dstClip = {0, 0, 0, dst_w, dst_h};
 
@@ -1686,19 +1686,19 @@ int hdmi_gl_set_param(int layer,
         cur_g2d_address = (unsigned int)dst_addr;
         prev_src_addr = src_y_address;
 
-        srcAddr = {(addr_space)ADDR_PHYS, (unsigned long)src_y_address, src_w*src_h*4, 1, 0};
-        srcImage = {srcAddr, srcAddr, src_w, src_h, src_w*4, AX_RGB, CF_ARGB_8888};
+        srcAddr = {(addr_space)ADDR_USER, (unsigned long)src_y_address};
+        srcImage = { src_w, src_h, src_w*4, AX_RGB, CF_ARGB_8888, srcAddr, srcAddr, srcRect, false };
         srcRect = {0, 0, src_w, src_h};
 
-        dstAddr = {(addr_space)ADDR_PHYS, (unsigned long)dst_addr, dst_w*dst_h*dst_bpp, 1, 0};
-        dstImage = {dstAddr, dstAddr, dst_w, dst_h, dst_w*dst_bpp, AX_RGB, (color_format)dst_color_format};
+        dstAddr = {(addr_space)ADDR_USER, (unsigned long)dst_addr};
+        dstImage = { dst_w, dst_h, dst_w*dst_bpp, AX_RGB, (color_format)dst_color_format, dstAddr, dstAddr, dstRect, false};
         dstRect = {0, 0, dst_w, dst_h};
         dstClip = {0, 0, 0, dst_w, dst_h};
 
         if (rotVal == 0 || rotVal == 180)
-            Scaling = {SCALING_BILINEAR, SCALING_PIXELS, 0, 0, src_w, src_h, dst_w, dst_h};
+            Scaling = {SCALING_BILINEAR, src_w, src_h, dst_w, dst_h};
         else
-            Scaling = {SCALING_BILINEAR, SCALING_PIXELS, 0, 0, src_w, src_h, dst_h, dst_w};
+            Scaling = {SCALING_BILINEAR, src_w, src_h, dst_h, dst_w};
 
         switch (rotVal) {
         case 0:
@@ -1719,8 +1719,13 @@ int hdmi_gl_set_param(int layer,
             break;
         }
 
-        BlitParam = {BLIT_OP_SRC, NON_PREMULTIPLIED, 0xff, 0, g2d_rotation, &Scaling, 0, 0, &dstClip, 0, &srcImage, &dstImage, NULL, &srcRect, &dstRect, NULL, 0};
-
+        struct fimg2d_param Param;
+        struct fimg2d_repeat Repeat;
+        struct fimg2d_bluscr BluScr;
+        memset(&Repeat, 0, sizeof(struct fimg2d_repeat));
+        memset(&BluScr, 0, sizeof(struct fimg2d_bluscr));
+        Param = {0, 0xff, 0, g2d_rotation, NON_PREMULTIPLIED, Scaling, Repeat, BluScr, dstClip};
+        BlitParam = {BLIT_OP_SRC, Param, &srcImage, NULL, NULL, &dstImage, BLIT_SYNC, 0};
         if (stretchFimgApi(&BlitParam) < 0) {
             ALOGE("%s::stretchFimgApi() fail", __func__);
             return -1;
@@ -2118,81 +2123,125 @@ int hdmi_resolution_2_preset_id(unsigned int resolution, int * w, int * h, unsig
 {
     int ret = 0;
 
-    switch (resolution) {
-    case 1080960:
-        *w      = 1920;
-        *h      = 1080;
-        *preset_id = V4L2_DV_1080P60;
-        break;
-    case 1080950:
-        *w      = 1920;
-        *h      = 1080;
-        *preset_id = V4L2_DV_1080P50;
-        break;
-    case 1080930:
-        *w      = 1920;
-        *h      = 1080;
-        *preset_id = V4L2_DV_1080P30;
-        break;
-    case 1080924:
-        *w      = 1920;
-        *h      = 1080;
-        *preset_id = V4L2_DV_1080P24_TB;
-        break;
-    case 1080160:
-        *w      = 1920;
-        *h      = 1080;
-        *preset_id = V4L2_DV_1080I60;
-        break;
-    case 1080150:
-        *w      = 1920;
-        *h      = 1080;
-        *preset_id = V4L2_DV_1080I50;
-        break;
-    case 720960:
-        *w      = 1280;
-        *h      = 720;
-        *preset_id = V4L2_DV_720P60;
-        break;
-    case 7209601:
-        *w      = 1280;
-        *h      = 720;
-        *preset_id = V4L2_DV_720P60_SB_HALF;
-        break;
-    case 720950:
-        *w      = 1280;
-        *h      = 720;
-        *preset_id = V4L2_DV_720P50;
-        break;
-    case 7209501:
-        *w      = 1280;
-        *h      = 720;
-        *preset_id = V4L2_DV_720P50_TB;
-        break;
-    case 5769501:
-        *w      = 720;
-        *h      = 576;
-        *preset_id = V4L2_DV_576P50;
-        break;
-    case 5769502:
-        *w      = 720;
-        *h      = 576;
-        *preset_id = V4L2_DV_576P50;
-       break;
-    case 4809601:
-        *w      = 720;
-        *h      = 480;
-        *preset_id = V4L2_DV_480P60;
-       break;
-    case 4809602:
-        *w     = 720;
-        *h     = 480;
-        *preset_id = V4L2_DV_480P60;
-      break;
-    default:
-        ALOGE("%s::unmathced resolution(%d)", __func__, resolution);
+    if (s3dMode == HDMI_2D) {
+        switch (resolution) {
+        case 1080960:
+            *w      = 1920;
+            *h      = 1080;
+            *preset_id = V4L2_DV_1080P60;
+            break;
+        case 1080950:
+            *w      = 1920;
+            *h      = 1080;
+            *preset_id = V4L2_DV_1080P50;
+            break;
+        case 1080930:
+            *w      = 1920;
+            *h      = 1080;
+            *preset_id = V4L2_DV_1080P30;
+            break;
+        case 1080924:
+            *w      = 1920;
+            *h      = 1080;
+            *preset_id = V4L2_DV_1080P24;
+            break;
+        case 1080160:
+            *w      = 1920;
+            *h      = 1080;
+            *preset_id = V4L2_DV_1080I60;
+            break;
+        case 1080150:
+            *w      = 1920;
+            *h      = 1080;
+            *preset_id = V4L2_DV_1080I50;
+            break;
+        case 720960:
+            *w      = 1280;
+            *h      = 720;
+            *preset_id = V4L2_DV_720P60;
+            break;
+        case 720950:
+            *w      = 1280;
+            *h      = 720;
+            *preset_id = V4L2_DV_720P50;
+            break;
+        case 5769501: // 16:9
+            *w      = 720;
+            *h      = 576;
+            *preset_id = V4L2_DV_576P50;
+            break;
+        case 5769502: // 4:3
+            *w      = 720;
+            *h      = 576;
+            *preset_id = V4L2_DV_576P50;
+            break;
+        case 4809601: // 16:9
+            *w      = 720;
+            *h      = 480;
+            *preset_id = V4L2_DV_480P60;
+            break;
+        case 4809602: // 4:3
+            *w      = 720;
+            *h      = 480;
+            *preset_id = V4L2_DV_480P60;
+            break;
+        default:
+            ALOGE("%s::unmathced resolution(%d)", __func__, resolution);
+            ret = -1;
+            break;
+        }
+    } else if (s3dMode == HDMI_S3D_TB) {
+        switch (resolution) {
+        case 1080960:
+            *w      = 1920;
+            *h      = 1080;
+            *preset_id = V4L2_DV_1080P60_TB;
+            break;
+        case 1080924:
+            *w      = 1920;
+            *h      = 1080;
+            *preset_id = V4L2_DV_1080P24_TB;
+            break;
+        case 720960:
+            *w      = 1280;
+            *h      = 720;
+            *preset_id = V4L2_DV_720P60_TB;
+            break;
+        case 720950:
+            *w      = 1280;
+            *h      = 720;
+            *preset_id = V4L2_DV_720P50_TB;
+            break;
+        default:
+            ALOGE("%s::unmathced resolution(%d)", __func__, resolution);
+            ret = -1;
+            break;
+        }
+    } else if (s3dMode == HDMI_S3D_SBS) {
+        switch (resolution) {
+        case 1080960:
+            *w      = 1920;
+            *h      = 1080;
+            *preset_id = V4L2_DV_1080P60_SB_HALF;
+            break;
+        case 1080924:
+            *w      = 1920;
+            *h      = 1080;
+            *preset_id = V4L2_DV_1080P24_SB_HALF;
+            break;
+        case 720960:
+            *w      = 1280;
+            *h      = 720;
+            *preset_id = V4L2_DV_720P60_SB_HALF;
+            break;
+        default:
+            ALOGE("%s::unmathced resolution(%d)", __func__, resolution);
+            ret = -1;
+            break;
+        }
+    } else {
+        ALOGE("%s::Unsupported S3D mode(%d)\n", __func__, s3dMode);
         ret = -1;
-        break;
     }
 
     return ret;
@@ -2304,85 +2353,129 @@ int hdmi_check_resolution(v4l2_std_id std_id)
     return 0;
 }
 
-int hdmi_resolution_2_std_id(unsigned int resolution, int * w, int * h, v4l2_std_id * std_id)
+int hdmi_resolution_2_std_id(unsigned int resolution, unsigned int s3dMode, int * w, int * h, v4l2_std_id * std_id)
 {
     int ret = 0;
 
-    switch (resolution) {
-    case 1080960:
-        *std_id = V4L2_STD_1080P_60;
-        *w      = 1920;
-        *h      = 1080;
-        break;
-    case 1080950:
-        *std_id = V4L2_STD_1080P_50;
-        *w      = 1920;
-        *h      = 1080;
-        break;
-    case 1080930:
-        *std_id = V4L2_STD_1080P_30;
-        *w      = 1920;
-        *h      = 1080;
-        break;
-    case 1080924:
-        *std_id = V4L2_STD_TVOUT_1080P_24_TB;
-        *w      = 1920;
-        *h      = 1080;
-        break;
-    case 1080160:
-        *std_id = V4L2_STD_1080I_60;
-        *w      = 1920;
-        *h      = 1080;
-        break;
-    case 1080150:
-        *std_id = V4L2_STD_1080I_50;
-        *w      = 1920;
-        *h      = 1080;
-        break;
-    case 720960:
-        *std_id = V4L2_STD_720P_60;
-        *w      = 1280;
-        *h      = 720;
-        break;
-    case 7209601:
-        *std_id = V4L2_STD_TVOUT_720P_60_SBS_HALF;
-        *w      = 1280;
-        *h      = 720;
-        break;
-    case 720950:
-        *std_id = V4L2_STD_720P_50;
-        *w      = 1280;
-        *h      = 720;
-        break;
-    case 7209501:
-        *std_id = V4L2_STD_TVOUT_720P_50_TB;
-        *w      = 1280;
-        *h      = 720;
-        break;
-    case 5769501:
-        *std_id = V4L2_STD_576P_50_16_9;
-        *w      = 720;
-        *h      = 576;
-        break;
-    case 5769502:
-        *std_id = V4L2_STD_576P_50_4_3;
-        *w      = 720;
-        *h      = 576;
-        break;
-    case 4809601:
-        *std_id = V4L2_STD_480P_60_16_9;
-        *w      = 720;
-        *h      = 480;
-        break;
-    case 4809602:
-        *std_id = V4L2_STD_480P_60_4_3;
-        *w     = 720;
-        *h     = 480;
-        break;
-    default:
-        ALOGE("%s::unmathced resolution(%d)", __func__, resolution);
+    if (s3dMode == HDMI_2D) {
+        switch (resolution) {
+        case 1080960:
+            *w      = 1920;
+            *h      = 1080;
+            *std_id = V4L2_DV_1080P60;
+            break;
+        case 1080950:
+            *w      = 1920;
+            *h      = 1080;
+            *std_id = V4L2_DV_1080P50;
+            break;
+        case 1080930:
+            *w      = 1920;
+            *h      = 1080;
+            *std_id = V4L2_DV_1080P30;
+            break;
+        case 1080924:
+            *w      = 1920;
+            *h      = 1080;
+            *std_id = V4L2_DV_1080P24;
+            break;
+        case 1080160:
+            *w      = 1920;
+            *h      = 1080;
+            *std_id = V4L2_DV_1080I60;
+            break;
+        case 1080150:
+            *w      = 1920;
+            *h      = 1080;
+            *std_id = V4L2_DV_1080I50;
+            break;
+        case 720960:
+            *w      = 1280;
+            *h      = 720;
+            *std_id = V4L2_DV_720P60;
+            break;
+        case 720950:
+            *w      = 1280;
+            *h      = 720;
+            *std_id = V4L2_DV_720P50;
+            break;
+        case 5769501: // 16:9
+            *w      = 720;
+            *h      = 576;
+            *std_id = V4L2_DV_576P50;
+            break;
+        case 5769502: // 4:3
+            *w      = 720;
+            *h      = 576;
+            *std_id = V4L2_DV_576P50;
+            break;
+        case 4809601: // 16:9
+            *w      = 720;
+            *h      = 480;
+            *std_id = V4L2_DV_480P60;
+            break;
+        case 4809602: // 4:3
+            *w      = 720;
+            *h      = 480;
+            *std_id = V4L2_DV_480P60;
+            break;
+        default:
+            ALOGE("%s::unmathced resolution(%d)", __func__, resolution);
+            ret = -1;
+            break;
+        }
+    } else if (s3dMode == HDMI_S3D_TB) {
+        switch (resolution) {
+        case 1080960:
+            *w      = 1920;
+            *h      = 1080;
+            *std_id = V4L2_DV_1080P60_TB;
+            break;
+        case 1080924:
+            *w      = 1920;
+            *h      = 1080;
+            *std_id = V4L2_DV_1080P24_TB;
+            break;
+        case 720960:
+            *w      = 1280;
+            *h      = 720;
+            *std_id = V4L2_DV_720P60_TB;
+            break;
+        case 720950:
+            *w      = 1280;
+            *h      = 720;
+            *std_id = V4L2_DV_720P50_TB;
+            break;
+        default:
+            ALOGE("%s::unmathced resolution(%d)", __func__, resolution);
+            ret = -1;
+            break;
+        }
+    } else if (s3dMode == HDMI_S3D_SBS) {
+        switch (resolution) {
+        case 1080960:
+            *w      = 1920;
+            *h      = 1080;
+            *std_id = V4L2_DV_1080P60_SB_HALF;
+            break;
+        case 1080924:
+            *w      = 1920;
+            *h      = 1080;
+            *std_id = V4L2_DV_1080P24_SB_HALF;
+            break;
+        case 720960:
+            *w      = 1280;
+            *h      = 720;
+            *std_id = V4L2_DV_720P60_SB_HALF;
+            break;
+        default:
+            ALOGE("%s::unmathced resolution(%d)", __func__, resolution);
+            ret = -1;
+            break;
+        }
+    } else {
+        ALOGE("%s::Unsupported S3D mode(%d)\n", __func__, s3dMode);
         ret = -1;
-        break;
     }
 
     return ret;
