@@ -32,8 +32,10 @@ namespace android {
 
     enum {
         SET_HDMI_STATUS = IBinder::FIRST_CALL_TRANSACTION,
+        GET_HDMI_STATUS,
         SET_HDMI_MODE,
         SET_HDMI_RESOLUTION,
+        GET_HDMI_RESOLUTION,
         SET_HDMI_HDCP,
         SET_HDMI_ROTATE,
         SET_HDMI_HWCLAYER,
@@ -47,6 +49,13 @@ namespace android {
         remote()->transact(SET_HDMI_STATUS, data, &reply);
     }
 
+    uint32_t BpSecTVOut::getHdmiCableStatus()
+    {
+        Parcel data, reply;
+        remote()->transact(GET_HDMI_STATUS, data, &reply);
+        return reply.readInt32();
+    }
+
     void BpSecTVOut::setHdmiMode(uint32_t mode)
     {
         Parcel data, reply;
@@ -54,11 +63,19 @@ namespace android {
         remote()->transact(SET_HDMI_MODE, data, &reply);
     }
 
-    void BpSecTVOut::setHdmiResolution(uint32_t resolution)
+    void BpSecTVOut::setHdmiResolution(uint32_t resolution, uint32_t s3dMode)
     {
         Parcel data, reply;
         data.writeInt32(resolution);
+        data.writeInt32(s3dMode);
         remote()->transact(SET_HDMI_RESOLUTION, data, &reply);
+    }
+
+    uint32_t BpSecTVOut::getHdmiResolution(void)
+    {
+        Parcel data, reply;
+        remote()->transact(GET_HDMI_RESOLUTION, data, &reply);
+        return reply.readInt32();
     }
 
     void BpSecTVOut::setHdmiHdcp(uint32_t resolution)
@@ -83,15 +100,23 @@ namespace android {
         remote()->transact(SET_HDMI_HWCLAYER, data, &reply);
     }
 
-    void BpSecTVOut::blit2Hdmi(uint32_t w, uint32_t h,
-                                        uint32_t colorFormat,
-                                        uint32_t physYAddr,
+    void BpSecTVOut::blit2Hdmi(int32_t w, int32_t h,
+                                        int32_t colorFormat,
+                                        int32_t physYAddr,
                                         uint32_t physCbAddr,
                                         uint32_t physCrAddr,
                                         uint32_t dstX,
                                         uint32_t dstY,
                                         uint32_t hdmiLayer,
-                                        uint32_t num_of_hwc_layer)
+                                        uint32_t num_of_hwc_layer,
+                                        uint32_t a,
+                                        uint32_t b,
+                                        uint32_t c,
+                                        uint32_t d,
+                                        uint32_t e,
+                                        uint32_t f,
+                                        uint32_t g,
+                                        uint32_t hh)
     {
         Parcel data, reply;
         data.writeInt32(w);
@@ -104,6 +129,14 @@ namespace android {
         data.writeInt32(dstY);
         data.writeInt32(hdmiLayer);
         data.writeInt32(num_of_hwc_layer);
+        data.writeInt32(a);
+        data.writeInt32(b);
+        data.writeInt32(c);
+        data.writeInt32(d);
+        data.writeInt32(e);
+        data.writeInt32(f);
+        data.writeInt32(g);
+        data.writeInt32(hh);
         remote()->transact(BLIT_2_HDMI, data, &reply);
     }
 

@@ -86,6 +86,7 @@ LOCAL_C_INCLUDES += \
 LOCAL_SHARED_LIBRARIES := \
 	libbinder \
 	libutils \
+	liblog \
 	libTVOut
 
 ifeq ($(TARGET_SIMULATOR),true)

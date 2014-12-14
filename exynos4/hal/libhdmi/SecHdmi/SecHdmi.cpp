@@ -245,6 +245,7 @@ SecHdmi::SecHdmi():
     mHdmiSrcCbCrAddr(0),
     mHdmiOutputMode(DEFAULT_OUPUT_MODE),
     mHdmiResolutionValue(DEFAULT_HDMI_RESOLUTION_VALUE), // V4L2_STD_480P_60_4_3
+    mHdmiS3DMode(HDMI_2D),
     mCompositeStd(DEFAULT_COMPOSITE_STD),
     mHdcpMode(false),
     mAudioMode(2),
@@ -252,11 +253,11 @@ SecHdmi::SecHdmi():
     mG2DUIRotVal(0),
     mCurrentHdmiOutputMode(-1),
     mCurrentHdmiResolutionValue(0), // 1080960
+    mCurrentHdmiS3DMode(0), // 0 = 2D mode
     mCurrentHdcpMode(false),
     mCurrentAudioMode(-1),
     mHdmiInfoChange(true),
     mFimcDstColorFormat(0),
-    mFimcCurrentOutBufIndex(0),
     mFBaddr(NULL),
     mFBsize(0),
     mFBionfd(-1),
@@ -309,13 +310,21 @@ SecHdmi::SecHdmi():
     mHdmiResolutionValueList[12] = 4809601;
     mHdmiResolutionValueList[13] = 4809602;
 
+    mHdmiS3dTbResolutionValueList[0] = 1080960;
+    mHdmiS3dTbResolutionValueList[1] = 1080924;
+    mHdmiS3dTbResolutionValueList[2] = 720960;
+    mHdmiS3dTbResolutionValueList[3] = 720950;
+
+    mHdmiS3dSbsResolutionValueList[0] = 1080960;
+    mHdmiS3dSbsResolutionValueList[1] = 1080924;
+    mHdmiS3dSbsResolutionValueList[2] = 720960;
+
 #if defined(BOARD_USES_CEC)
     mCECThread = new CECThread(this);
 #endif
 
     SecBuffer zeroBuf;
-    for (int i = 0; i < HDMI_FIMC_OUTPUT_BUF_NUM; i++)
-        mFimcReservedMem[i] = zeroBuf;
+    mFimcReservedMem = zeroBuf;
 #if defined(BOARD_USE_V4L2)
     for (int i = 0; i < HDMI_LAYER_MAX; i++)
         for (int j = 0; j < MAX_BUFFERS_MIXER; j++)
@@ -341,10 +350,9 @@ bool SecHdmi::create(int width, int height)
     Mutex::Autolock lock(mLock);
     unsigned int fimc_buf_size = 0;
     unsigned int gralloc_buf_size = 0;
-    mFimcCurrentOutBufIndex = 0;
     int stride;
     int vstride;
-    int BufNum = 0;
+    unsigned int BufNum = 0;
 #if defined(BOARD_USE_V4L2_ION)
     int IonClient = -1;
     int IonFd = -1;
@@ -392,7 +400,7 @@ bool SecHdmi::create(int width, int height)
     BufNum = 1;
 #endif
 
-    if (mSecFimc.create(SecFimc::DEV_3, SecFimc::MODE_SINGLE_BUF, BufNum) == false) {
+    if (mSecFimc.create(SecFimc::FIMC_DEV3, FIMC_OVLY_NONE_SINGLE_BUF, BufNum) == false) {
         ALOGE("%s::SecFimc create() fail", __func__);
         goto CREATE_FAIL;
     }
@@ -420,16 +428,16 @@ bool SecHdmi::create(int width, int height)
 #else
 #ifndef BOARD_USE_V4L2
     for (int i = 0; i < HDMI_FIMC_OUTPUT_BUF_NUM; i++)
-        mFimcReservedMem[i].phys.p = mSecFimc.getMemAddr()->phys.p + gralloc_buf_size + (fimc_buf_size * i);
+        mFimcReservedMem.phys.p = mSecFimc.getFimcRsrvedPhysMemAddr() + gralloc_buf_size + fimc_buf_size;
 #endif
 
 #if defined(BOARD_USES_FIMGAPI)
 #if defined(BOARD_USES_HDMI_SUBTITLES)
     for (int i = 0; i < HDMI_G2D_OUTPUT_BUF_NUM; i++)
-        g2d_reserved_memory[i] = mFimcReservedMem[HDMI_FIMC_OUTPUT_BUF_NUM - 1].phys.p + fimc_buf_size + (g2d_reserved_memory_size * i);
+        g2d_reserved_memory[i] = mFimcReservedMem.phys.p + fimc_buf_size + (g2d_reserved_memory_size * i);
 #else
     for (int i = 0; i < HDMI_G2D_OUTPUT_BUF_NUM; i++)
-        g2d_reserved_memory[i] = mSecFimc.getMemAddr()->phys.p + gralloc_buf_size + (g2d_reserved_memory_size * i);
+        g2d_reserved_memory[i] = mSecFimc.getFimcRsrvedPhysMemAddr() + gralloc_buf_size + (g2d_reserved_memory_size * i);
 #endif
 #endif
 #endif
@@ -454,12 +462,12 @@ bool SecHdmi::create(int width, int height)
 #if defined(BOARD_USE_V4L2)
         unsigned int preset_id;
 
-        if (hdmi_resolution_2_preset_id(mHdmiResolutionValue, &mHdmiDstWidth, &mHdmiDstHeight, &preset_id) < 0) {
+        if (hdmi_resolution_2_preset_id(mHdmiResolutionValue, mHdmiS3DMode, &mHdmiDstWidth, &mHdmiDstHeight, &preset_id) < 0) {
             ALOGE("%s::hdmi_resolution_2_preset_id(%d) fail\n", __func__, mHdmiResolutionValue);
             goto CREATE_FAIL;
         }
 #else
-        if (hdmi_resolution_2_std_id(mHdmiResolutionValue, &mHdmiDstWidth, &mHdmiDstHeight, &std_id) < 0) {
+        if (hdmi_resolution_2_std_id(mHdmiResolutionValue, mHdmiS3DMode, &mHdmiDstWidth, &mHdmiDstHeight, &std_id) < 0) {
             ALOGE("%s::hdmi_resolution_2_std_id(%d) fail\n", __func__, mHdmiResolutionValue);
             goto CREATE_FAIL;
         }
@@ -596,7 +604,7 @@ bool SecHdmi::connect(void)
 
     if (mHdmiOutputMode >= HDMI_OUTPUT_MODE_YCBCR &&
             mHdmiOutputMode <= HDMI_OUTPUT_MODE_DVI) {
-        if (this->setHdmiResolution(mHdmiResolutionValue, true) == false)
+        if (this->setHdmiResolution(mHdmiResolutionValue, mHdmiS3DMode, true) == false)
             ALOGE("%s::setHdmiResolution(%d) fail \n", __func__, mHdmiResolutionValue);
 
         if (this->setHdcpMode(mHdcpMode, false) == false)
@@ -676,8 +684,8 @@ bool SecHdmi::disconnect(void)
     mAudioMode = 2;
     mCurrentHdmiOutputMode = -1;
     mCurrentHdmiResolutionValue = 0;
+    mCurrentHdmiS3DMode = HDMI_2D;
     mCurrentAudioMode = -1;
-    mFimcCurrentOutBufIndex = 0;
 
     return true;
 }
@@ -867,32 +875,32 @@ bool SecHdmi::flush(int srcW, int srcH, int srcColorFormat,
                     mHdmiDstWidth, mHdmiDstHeight);
 #endif
         } else {
-            if (mSecFimc.setSrcAddr(srcYAddr, srcCbAddr, srcCrAddr, srcColorFormat) == false) {
-                ALOGE("%s::setSrcAddr(%d, %d, %d) fail",
+            if (mSecFimc.setSrcPhyAddr(srcYAddr, srcCbAddr, srcCrAddr) == false) {
+                ALOGE("%s::setSrcPhyAddr(%d, %d, %d) fail",
                         __func__, srcYAddr, srcCbAddr, srcCrAddr);
                 return false;
             }
 
             int  y_size = 0;
             if (mUIRotVal == 0 || mUIRotVal == 180)
-                y_size =  ALIGN(ALIGN(srcW,128) * ALIGN(srcH, 32), SZ_8K);
+                y_size =  ALIGN(ALIGN(srcW,128) * ALIGN(srcH, 32), 0x00002000);
             else
-                y_size =  ALIGN(ALIGN(srcH,128) * ALIGN(srcW, 32), SZ_8K);
+                y_size =  ALIGN(ALIGN(srcH,128) * ALIGN(srcW, 32), 0x00002000);
 
-            mHdmiSrcYAddr    = mFimcReservedMem[mFimcCurrentOutBufIndex].phys.extP[0];
+            mHdmiSrcYAddr    = mFimcReservedMem.phys.extP[0];
 #ifdef BOARD_USE_V4L2
-            mHdmiSrcCbCrAddr = mFimcReservedMem[mFimcCurrentOutBufIndex].phys.extP[1];
+            mHdmiSrcCbCrAddr = mFimcReservedMem.phys.extP[1];
 #else
-            mHdmiSrcCbCrAddr = mFimcReservedMem[mFimcCurrentOutBufIndex].phys.extP[0] + y_size;
+            mHdmiSrcCbCrAddr = mFimcReservedMem.phys.extP[0] + y_size;
 #endif
-            if (mSecFimc.setDstAddr(mHdmiSrcYAddr, mHdmiSrcCbCrAddr, 0, mFimcCurrentOutBufIndex) == false) {
-                ALOGE("%s::mSecFimc.setDstAddr(%d, %d) fail \n",
+            if (mSecFimc.setDstPhyAddr(mHdmiSrcYAddr, mHdmiSrcCbCrAddr, 0) == false) {
+                ALOGE("%s::mSecFimc.setDstPhyAddr(%d, %d) fail \n",
                         __func__, mHdmiSrcYAddr, mHdmiSrcCbCrAddr);
                 return false;
             }
 
-            if (mSecFimc.draw(0, mFimcCurrentOutBufIndex) == false) {
-                ALOGE("%s::mSecFimc.draw() fail \n", __func__);
+            if (mSecFimc.handleOneShot() == false) {
+                ALOGE("%s::mSecFimc.handleOneShot() fail \n", __func__);
                 return false;
             }
 #if defined(BOARD_USE_V4L2)
@@ -910,23 +918,20 @@ bool SecHdmi::flush(int srcW, int srcH, int srcColorFormat,
                         mHdmiSrcYAddr, mHdmiSrcCbCrAddr,
                         mHdmiDstWidth, mHdmiDstHeight);
 #endif
-            mFimcCurrentOutBufIndex++;
-            if (mFimcCurrentOutBufIndex >= HDMI_FIMC_OUTPUT_BUF_NUM)
-                mFimcCurrentOutBufIndex = 0;
         }
 
     } else {
         if (srcColorFormat != HAL_PIXEL_FORMAT_BGRA_8888 &&
             srcColorFormat != HAL_PIXEL_FORMAT_RGBA_8888 &&
             srcColorFormat != HAL_PIXEL_FORMAT_RGB_565) {
-            if (mSecFimc.setSrcAddr(srcYAddr, srcCbAddr, srcCrAddr, srcColorFormat) == false) {
-                ALOGE("%s::setSrcAddr(%d, %d, %d) fail",
+            if (mSecFimc.setSrcPhyAddr(srcYAddr, srcCbAddr, srcCrAddr) == false) {
+                ALOGE("%s::setSrcPhyAddr(%d, %d, %d) fail",
                      __func__, srcYAddr, srcCbAddr, srcCrAddr);
                 return false;
             }
 
-            if (mSecFimc.draw(0, mFimcCurrentOutBufIndex) == false) {
-                ALOGE("%s::mSecFimc.draw() failed", __func__);
+            if (mSecFimc.handleOneShot() == false) {
+                ALOGE("%s::mSecFimc.handleOneShot() failed", __func__);
                 return false;
             }
 #if defined(BOARD_USE_V4L2)
@@ -1106,10 +1111,10 @@ bool SecHdmi::setHdmiOutputMode(int hdmiOutputMode, bool forceRun)
     return true;
 }
 
-bool SecHdmi::setHdmiResolution(unsigned int hdmiResolutionValue, bool forceRun)
+bool SecHdmi::setHdmiResolution(unsigned int hdmiResolutionValue, unsigned int s3dMode, bool forceRun)
 {
 #ifdef DEBUG_MSG_ENABLE
-    ALOGD("%s:: hdmiResolutionValue = %d, forceRun = %d", __func__, hdmiResolutionValue, forceRun);
+    ALOGD("%s:: hdmiResolutionValue = %d, s3dMode=%d, forceRun = %d", __func__, hdmiResolutionValue, s3dMode, forceRun);
 #endif
 
     Mutex::Autolock lock(mLock);
@@ -1119,14 +1124,15 @@ bool SecHdmi::setHdmiResolution(unsigned int hdmiResolutionValue, bool forceRun)
         return false;
     }
 
-    if (forceRun == false && mHdmiResolutionValue == hdmiResolutionValue) {
+    if (forceRun == false && mHdmiS3DMode == s3dMode &&  mHdmiResolutionValue == hdmiResolutionValue) {
 #ifdef DEBUG_HDMI_HW_LEVEL
-        ALOGD("%s::same hdmiResolutionValue(%d) \n", __func__, hdmiResolutionValue);
+        ALOGD("%s::same hdmiResolutionValue(%d) s3dMode(%d)\n", __func__, hdmiResolutionValue, s3dMode);
 #endif
         return true;
     }
 
     unsigned int newHdmiResolutionValue = hdmiResolutionValue;
+    unsigned int newHdmiS3DMode = s3dMode;
     int w = 0;
     int h = 0;
 
@@ -1134,13 +1140,13 @@ bool SecHdmi::setHdmiResolution(unsigned int hdmiResolutionValue, bool forceRun)
     // find perfect resolutions..
 #if defined(BOARD_USE_V4L2)
     unsigned int preset_id;
-    if (hdmi_resolution_2_preset_id(newHdmiResolutionValue, &w, &h, &preset_id) < 0 ||
+    if (hdmi_resolution_2_preset_id(newHdmiResolutionValue, s3dMode, &w, &h, &preset_id) < 0 ||
         hdmi_check_resolution(preset_id) < 0) {
         bool flagFoundIndex = false;
-        int resolutionValueIndex = m_resolutionValueIndex(newHdmiResolutionValue);
+        int resolutionValueIndex = m_resolutionValueIndex(newHdmiResolutionValue, newHdmiS3DMode);
 
         for (int i = resolutionValueIndex + 1; i < mHdmiSizeOfResolutionValueList; i++) {
-            if (hdmi_resolution_2_preset_id(mHdmiResolutionValueList[i], &w, &h, &preset_id) == 0 &&
+            if (hdmi_resolution_2_preset_id(mHdmiResolutionValueList[i], s3dMode, &w, &h, &preset_id) == 0 &&
                 hdmi_check_resolution(preset_id) == 0) {
                 newHdmiResolutionValue = mHdmiResolutionValueList[i];
                 flagFoundIndex = true;
@@ -1158,13 +1164,13 @@ bool SecHdmi::setHdmiResolution(unsigned int hdmiResolutionValue, bool forceRun)
     }
 #else
     v4l2_std_id std_id;
-    if (hdmi_resolution_2_std_id(newHdmiResolutionValue, &w, &h, &std_id) < 0 ||
+    if (hdmi_resolution_2_std_id(newHdmiResolutionValue, s3dMode, &w, &h, &std_id) < 0 ||
         hdmi_check_resolution(std_id) < 0) {
         bool flagFoundIndex = false;
-        int resolutionValueIndex = m_resolutionValueIndex(newHdmiResolutionValue);
+        int resolutionValueIndex = m_resolutionValueIndex(newHdmiResolutionValue, newHdmiS3DMode);
 
         for (int i = resolutionValueIndex + 1; i < mHdmiSizeOfResolutionValueList; i++) {
-            if (hdmi_resolution_2_std_id(mHdmiResolutionValueList[i], &w, &h, &std_id) == 0 &&
+            if (hdmi_resolution_2_std_id(mHdmiResolutionValueList[i], s3dMode, &w, &h, &std_id) == 0 &&
                 hdmi_check_resolution(std_id) == 0) {
                 newHdmiResolutionValue = mHdmiResolutionValueList[i];
                 flagFoundIndex = true;
@@ -1193,8 +1199,19 @@ bool SecHdmi::setHdmiResolution(unsigned int hdmiResolutionValue, bool forceRun)
         mHdmiInfoChange = true;
     }
 
+    if (mHdmiS3DMode != newHdmiS3DMode) {
+        mHdmiS3DMode = newHdmiS3DMode;
+        mHdmiInfoChange = true;
+    }
+
     return true;
 }
+
+unsigned int SecHdmi::getHdmiResolution(void)
+{
+    return mHdmiResolutionValue;
+}
+
 
 bool SecHdmi::setHdcpMode(bool hdcpMode, bool forceRun)
 {
@@ -1283,7 +1300,6 @@ bool SecHdmi::m_reset(int w, int h, int colorFormat, int hdmiLayer, int hwcLayer
     ALOGD("### %s called", __func__);
 #endif
     v4l2_std_id std_id = 0;
-    mFimcCurrentOutBufIndex = 0;
 
     int srcW = w;
     int srcH = h;
@@ -1482,7 +1498,7 @@ bool SecHdmi::m_reset(int w, int h, int colorFormat, int hdmiLayer, int hwcLayer
             }
         } else if (mHdmiOutputMode >= HDMI_OUTPUT_MODE_YCBCR &&
                    mHdmiOutputMode <= HDMI_OUTPUT_MODE_DVI) {
-            if (m_setHdmiResolution(mHdmiResolutionValue) == false) {
+            if (m_setHdmiResolution(mHdmiResolutionValue, mHdmiS3DMode) == false) {
                 ALOGE("%s::m_setHdmiResolution() fail \n", __func__);
                 return false;
             }
@@ -1523,8 +1539,7 @@ bool SecHdmi::m_reset(int w, int h, int colorFormat, int hdmiLayer, int hwcLayer
 
         mHdmiInfoChange = false;
 #ifdef BOARD_USE_V4L2
-        for (int i = 0; i < HDMI_FIMC_OUTPUT_BUF_NUM; i++)
-            mFimcReservedMem[i] = *(mSecFimc.getMemAddr(i));
+        mFimcReservedMem = *(mSecFimc.getFimcRsrvedPhysMemAddr());
 #endif
     }
 
@@ -1779,15 +1794,15 @@ bool SecHdmi::m_setCompositeResolution(unsigned int compositeStdId)
     return true;
 }
 
-bool SecHdmi::m_setHdmiResolution(unsigned int hdmiResolutionValue)
+bool SecHdmi::m_setHdmiResolution(unsigned int hdmiResolutionValue, unsigned int s3dMode)
 {
 #ifdef DEBUG_MSG_ENABLE
     ALOGD("%s", __func__);
 #endif
 
-    if (hdmiResolutionValue == mCurrentHdmiResolutionValue) {
+    if ((hdmiResolutionValue == mCurrentHdmiResolutionValue) && (s3dMode == mCurrentHdmiS3DMode)) {
 #ifdef DEBUG_HDMI_HW_LEVEL
-        ALOGD("%s::same hdmiResolutionValue(%d) \n", __func__, hdmiResolutionValue);
+        ALOGD("%s::same hdmiResolutionValue(%d), mCurrentHdmiS3DMode(%d) \n", __func__, hdmiResolutionValue, mCurrentHdmiS3DMode);
 #endif
         return true;
     }
@@ -1808,13 +1823,13 @@ bool SecHdmi::m_setHdmiResolution(unsigned int hdmiResolutionValue)
     if (mHdmiOutputMode >= HDMI_OUTPUT_MODE_YCBCR &&
         mHdmiOutputMode <= HDMI_OUTPUT_MODE_DVI) {
 #if defined(BOARD_USE_V4L2)
-        if (hdmi_resolution_2_preset_id(hdmiResolutionValue, &w, &h, &preset_id) < 0) {
+        if (hdmi_resolution_2_preset_id(hdmiResolutionValue, s3dMode, &w, &h, &preset_id) < 0) {
             ALOGE("%s::hdmi_resolution_2_std_id(%d) fail\n", __func__, hdmiResolutionValue);
             return false;
         }
         mHdmiPresetId    = preset_id;
 #else
-        if (hdmi_resolution_2_std_id(hdmiResolutionValue, &w, &h, &std_id) < 0) {
+        if (hdmi_resolution_2_std_id(hdmiResolutionValue, s3dMode, &w, &h, &std_id) < 0) {
             ALOGE("%s::hdmi_resolution_2_std_id(%d) fail\n", __func__, hdmiResolutionValue);
             return false;
         }
@@ -1835,6 +1850,7 @@ bool SecHdmi::m_setHdmiResolution(unsigned int hdmiResolutionValue)
     mHdmiDstHeight = h;
 
     mCurrentHdmiResolutionValue = hdmiResolutionValue;
+    mCurrentHdmiS3DMode = s3dMode;
 
 #ifdef DEBUG_HDMI_HW_LEVEL
 #if defined(BOARD_USE_V4L2)
@@ -1912,7 +1928,7 @@ bool SecHdmi::m_setAudioMode(int audioMode)
     return true;
 }
 
-int SecHdmi::m_resolutionValueIndex(unsigned int ResolutionValue)
+int SecHdmi::m_resolutionValueIndex(unsigned int ResolutionValue, unsigned int s3dMode)
 {
 #ifdef DEBUG_MSG_ENABLE
     ALOGD("%s", __func__);
@@ -1920,11 +1936,29 @@ int SecHdmi::m_resolutionValueIndex(unsigned int ResolutionValue)
 
     int index = -1;
 
-    for (int i = 0; i < mHdmiSizeOfResolutionValueList; i++) {
-        if (mHdmiResolutionValueList[i] == ResolutionValue) {
-            index = i;
-            break;
+    if (s3dMode == HDMI_2D) {
+        for (int i = 0; i < NUM_SUPPORTED_RESOLUTION_2D; i++) {
+            if (mHdmiResolutionValueList[i] == ResolutionValue) {
+                index = i;
+                break;
+            }
         }
+    } else if (s3dMode == HDMI_S3D_TB) {
+        for (int i = 0; i < NUM_SUPPORTED_RESOLUTION_S3D_TB; i++) {
+            if (mHdmiS3dTbResolutionValueList[i] == ResolutionValue) {
+                index = i;
+                break;
+            }
+        }
+    } else if (s3dMode == HDMI_S3D_SBS) {
+        for (int i = 0; i < NUM_SUPPORTED_RESOLUTION_S3D_SBS; i++) {
+            if (mHdmiS3dSbsResolutionValueList[i] == ResolutionValue) {
+                index = i;
+                break;
+            }
+        }
+    } else {
+        ALOGE("%s::Unsupported S3D mode(%d)\n", __func__, s3dMode);
     }
     return index;
 }
