@@ -152,7 +152,6 @@ static int set_light_backlight(struct light_device_t *dev,
 {
     int err = 0;
     int brightness = rgb_to_brightness(state);
-    int previous_brightness = read_int(PANEL_FILE);
 
     pthread_mutex_lock(&g_lock);
     err = write_int(PANEL_FILE, brightness);
@@ -166,9 +165,6 @@ static int
 set_light_buttons(struct light_device_t* dev,
         struct light_state_t const* state)
 {
-#ifdef EXYNOS4X12_TABLET
-    return 0;
-#else
     int err = 0;
     int brightness = rgb_to_brightness(state);
 
@@ -178,21 +174,18 @@ set_light_buttons(struct light_device_t* dev,
     pthread_mutex_unlock(&g_lock);
 
     return err;
-#endif
 }
 
 /* LEDs */
 static int write_leds(struct led_config led)
 {
     int err = 0;
-
     pthread_mutex_lock(&g_lock);
     err = write_int(LED_RED, led.red);
     err = write_int(LED_GREEN, led.green);
     err = write_int(LED_BLUE, led.blue);
     err = write_str(LED_BLINK, led.blink);
     pthread_mutex_unlock(&g_lock);
-
     return err;
 }
 
@@ -284,14 +277,18 @@ static int open_lights(const struct hw_module_t *module, char const *name,
 
     if (0 == strcmp(LIGHT_ID_BACKLIGHT, name))
         set_light = set_light_backlight;
+#if !defined(EXYNOS4X12_TABLET) || defined(EXYNOS4X12_TABLET_HAS_LED_BUTTONS)
     else if (0 == strcmp(LIGHT_ID_BUTTONS, name))
         set_light = set_light_buttons;
+#endif
+#ifndef EXYNOS4X12_TABLET
     else if (0 == strcmp(LIGHT_ID_NOTIFICATIONS, name))
         set_light = set_light_leds_notifications;
     else if (0 == strcmp(LIGHT_ID_ATTENTION, name))
         set_light = set_light_leds_attention;
     else if (0 == strcmp(LIGHT_ID_BATTERY, name))
         set_light = set_light_battery;
+#endif
     else
         return -EINVAL;
 

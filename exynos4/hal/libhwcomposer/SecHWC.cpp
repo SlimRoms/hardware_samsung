@@ -547,7 +547,7 @@ static int hwc_prepare(hwc_composer_device_1_t *dev, size_t numDisplays, hwc_dis
         
 #ifdef SKIP_DUMMY_UI_LAY_DRAWING
     if ((list && (!(list->flags & HWC_GEOMETRY_CHANGED))) &&
-    (ctx->num_of_hwc_layer > 0)) {
+	(ctx->num_of_hwc_layer > 0)) {
       get_hwc_ui_lay_skipdraw_decision(ctx, list);
       return 0;
     }
