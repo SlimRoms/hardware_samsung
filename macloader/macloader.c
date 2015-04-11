@@ -182,6 +182,7 @@ int main() {
     /* semcosh */
     if (strncasecmp(mac_addr_half, "34:23:ba", 9) == 0 ||
         strncasecmp(mac_addr_half, "38:aa:3c", 9) == 0 ||
+        strncasecmp(mac_addr_half, "50:cc:f8", 9) == 0 ||
         strncasecmp(mac_addr_half, "5c:0a:5b", 9) == 0 ||
         strncasecmp(mac_addr_half, "88:32:9b", 9) == 0 ||
         strncasecmp(mac_addr_half, "90:18:7c", 9) == 0 ||
