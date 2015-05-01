@@ -22,7 +22,7 @@ import java.io.File;
 
 public class VibratorHW {
 
-    private static String LEVEL_PATH = "/sys/class/timed_output/vibrator/pwm_value";
+    private static String LEVEL_PATH = "/sys/vibrator/pwm_val";
     private static String LEVEL_MAX_PATH = "/sys/class/timed_output/vibrator/pwm_max";
     private static String LEVEL_MIN_PATH = "/sys/class/timed_output/vibrator/pwm_min";
     private static String LEVEL_DEFAULT_PATH = "/sys/class/timed_output/vibrator/pwm_default";
