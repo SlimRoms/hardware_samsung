@@ -46,7 +46,6 @@ char const*const LED_RED = "/sys/class/sec/led/led_r";
 char const*const LED_GREEN = "/sys/class/sec/led/led_g";
 char const*const LED_BLUE = "/sys/class/sec/led/led_b";
 char const*const LED_BLINK = "/sys/class/sec/led/led_blink";
-char const*const LED_BRIGHTNESS = "/sys/class/sec/led/led_br_lev";
 
 #define MAX_WRITE_CMD 25
 
@@ -177,7 +176,7 @@ set_light_buttons(struct light_device_t* dev,
     int brightness = rgb_to_brightness(state);
 
     pthread_mutex_lock(&g_lock);
-    ALOGD("set_light_buttons: %d\n", brightness > 0 ? 1 : 2);
+    ALOGV("set_light_buttons: %d\n", brightness > 0 ? 1 : 2);
     err = write_int(BUTTON_FILE, brightness > 0 ? 1 : 2);
     pthread_mutex_unlock(&g_lock);
 
@@ -206,17 +205,16 @@ static int set_light_leds(struct light_state_t const *state)
 
     if (is_lit(&g_AttentionStore)) {
         activeState = &g_AttentionStore;
-        colorRGB = get_dimmed_color(activeState, 200);
+        colorRGB = get_dimmed_color(activeState, 255);
     } else {
         if (is_lit(&g_BatteryStore) && !is_lit(&g_NotificationStore)) {
             activeState = &g_BatteryStore;
-            colorRGB = get_dimmed_color(activeState, 20);
+            colorRGB = get_dimmed_color(activeState, 255);
         } else {
             activeState = &g_NotificationStore;
             colorRGB = get_dimmed_color(activeState, 200);
         }
     }
-
 
     switch (activeState->flashMode) {
     case LIGHT_FLASH_TIMED:
@@ -235,7 +233,7 @@ static int set_light_leds(struct light_state_t const *state)
     led.green = (colorRGB >> 8) & 0xFF;
     led.blue = colorRGB & 0xFF;
     snprintf(led.blink, MAX_WRITE_CMD, "0x%x %d %d", colorRGB, onMS, offMS);
-    ALOGD("set_light_leds 0x%x %d %d", colorRGB, onMS, offMS);
+    ALOGV("set_light_leds 0x%x %d %d", colorRGB, onMS, offMS);
 
     return write_leds(led);
 }
