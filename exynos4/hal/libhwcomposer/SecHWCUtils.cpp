@@ -659,7 +659,7 @@ static int get_src_phys_addr(struct hwc_context_t *ctx,
     ADDRS * addr;
 
     // error check routine
-    if (0 == src_img->base && !(src_img->usage & GRALLOC_USAGE_HW_FIMC1)) {
+    if (0 == src_img->base && !(src_img->usage & GRALLOC_USAGE_HW_ION)) {
         SEC_HWC_Log(HWC_LOG_ERROR, "%s invalid src image base\n", __func__);
         return 0;
     }
@@ -706,14 +706,14 @@ static int get_src_phys_addr(struct hwc_context_t *ctx,
             }
             break;
         default:
-            if (src_img->usage & GRALLOC_USAGE_HW_FIMC1) {
+            if (src_img->usage & GRALLOC_USAGE_HW_ION) {
                 fimc->params.src.buf_addr_phy_rgb_y = src_img->paddr;
                 fimc->params.src.buf_addr_phy_cb = src_img->paddr + src_img->uoffset;
                 fimc->params.src.buf_addr_phy_cr = src_img->paddr + src_img->uoffset + src_img->voffset;
                 src_phys_addr = fimc->params.src.buf_addr_phy_rgb_y;
             } else {
                 SEC_HWC_Log(HWC_LOG_ERROR, "%s::\nformat = 0x%x : Not "
-                        "GRALLOC_USAGE_HW_FIMC1 can not supported\n",
+                        "GRALLOC_USAGE_HW_ION can not supported\n",
                         __func__, src_img->format);
             }
             break;
@@ -1106,7 +1106,7 @@ static int runFimcCore(struct hwc_context_t *ctx,
             src_cbcr_order = false;
         }
 
-        if (src_img->usage & GRALLOC_USAGE_HW_FIMC1) {
+        if (src_img->usage & GRALLOC_USAGE_HW_ION) {
             fimc_src_buf.base[0] = params->src.buf_addr_phy_rgb_y;
             if (src_cbcr_order == true) {
                 fimc_src_buf.base[1] = params->src.buf_addr_phy_cb;
