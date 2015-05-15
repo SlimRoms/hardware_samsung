@@ -12,6 +12,7 @@ LOCAL_C_INCLUDES := $(OMX_INC) \
 	$(SEC_OMX_INC)/sec \
 	$(SEC_OMX_TOP)/osal \
 	$(SEC_OMX_TOP)/core \
+	$(SEC_OMX_TOP)/include/sec \
 	$(SEC_OMX_COMPONENT)/common \
 	$(SEC_OMX_COMPONENT)/video/dec \
 	$(TARGET_OUT_HEADERS)/$(SEC_COPY_HEADERS_TO)
