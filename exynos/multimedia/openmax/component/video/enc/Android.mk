@@ -14,6 +14,8 @@ LOCAL_C_INCLUDES := $(OMX_INC) \
 	$(SEC_OMX_TOP)/core \
 	$(SEC_OMX_COMPONENT)/common \
 	$(SEC_OMX_COMPONENT)/video/dec \
+	hardware/samsung/exynos4/hal/include \
+	hardware/samsung/exynos4/hal/libcsc \
 	$(TARGET_OUT_HEADERS)/$(SEC_COPY_HEADERS_TO)
 
 ifeq ($(BOARD_USE_METADATABUFFERTYPE), true)
@@ -23,5 +25,7 @@ endif
 ifeq ($(BOARD_USE_STOREMETADATA), true)
 LOCAL_CFLAGS += -DUSE_STOREMETADATA
 endif
+
+LOCAL_SHARED_LIBRARIES := libcsc
 
 include $(BUILD_STATIC_LIBRARY)
