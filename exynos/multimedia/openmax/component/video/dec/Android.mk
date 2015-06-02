@@ -13,10 +13,12 @@ LOCAL_C_INCLUDES := $(OMX_INC) \
 	$(SEC_OMX_TOP)/osal \
 	$(SEC_OMX_TOP)/core \
 	$(SEC_OMX_COMPONENT)/common \
-	$(SEC_OMX_COMPONENT)/video/dec
+	$(SEC_OMX_COMPONENT)/video/dec \
+	hardware/samsung/exynos4/hal/include \
+	hardware/samsung/exynos4/hal/libcsc
 
 ifeq ($(BOARD_USE_ANB), true)
-LOCAL_STATIC_LIBRARIES := libsecosal
+LOCAL_STATIC_LIBRARIES := libsecosal libcsc_helper
 LOCAL_CFLAGS += -DUSE_ANB
 endif
 
