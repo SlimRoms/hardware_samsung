@@ -46,7 +46,7 @@
 #include "linux/fb.h"
 
 #include "s3c_lcd.h"
-#include "sec_format.h"
+#include "exynos_format.h"
 
 //#define HWC_DEBUG 1
 #if defined(BOARD_USES_FIMGAPI)

@@ -35,7 +35,7 @@
 #include <cutils/atomic.h>
 #include <hardware/hardware.h>
 #include <hardware/gralloc.h>
-#include "sec_format.h"
+#include "exynos_format.h"
 
 #include "gralloc_priv.h"
 #include "gralloc_helper.h"

@@ -46,7 +46,7 @@ extern "C" {
 
 #include "s5p_fimc.h"
 #include "sec_utils.h"
-#include "sec_format.h"
+#include "exynos_format.h"
 #include "SecBuffer.h"
 #include "SecRect.h"
 

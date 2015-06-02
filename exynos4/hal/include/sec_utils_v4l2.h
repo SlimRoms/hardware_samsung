@@ -41,7 +41,7 @@
 //---------------------------------------------------------//
 
 #include <hardware/hardware.h>
-#include "sec_format.h"
+#include "exynos_format.h"
 
 #ifdef __cplusplus
 extern "C" {

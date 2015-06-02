@@ -32,7 +32,7 @@
 
 #include "ISecTVOut.h"
 #include "SecHdmi.h"
-#include "sec_format.h"
+#include "exynos_format.h"
 #include "sec_utils.h"
 #include "MessageQueue.h"
 
