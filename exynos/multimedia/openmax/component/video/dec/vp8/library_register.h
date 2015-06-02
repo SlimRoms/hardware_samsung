@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2011 Samsung Electronics S.LSI Co. LTD
+ * Copyright 2012 Samsung Electronics S.LSI Co. LTD
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,17 +19,17 @@
  * @file        library_register.h
  * @brief
  * @author      Satish Kumar Reddy (palli.satish@samsung.com)
- * @version     1.1.0
+ * @version     2.0.0
  * @history
- *   2011.11.15 : Create
+ *   2012.02.20 : Create
  */
 
-#ifndef SEC_OMX_VP8_DEC_REG
-#define SEC_OMX_VP8_DEC_REG
+#ifndef EXYNOS_OMX_VP8_DEC_REG
+#define EXYNOS_OMX_VP8_DEC_REG
 
-#include "SEC_OMX_Def.h"
+#include "Exynos_OMX_Def.h"
 #include "OMX_Component.h"
-#include "SEC_OMX_Component_Register.h"
+#include "Exynos_OMX_Component_Register.h"
 
 
 #define OSCL_EXPORT_REF __attribute__((visibility("default")))
@@ -37,15 +37,16 @@
 #define MAX_COMPONENT_ROLE_NUM  1
 
 /* VP8 */
-#define SEC_OMX_COMPONENT_VP8_DEC "OMX.SEC.VP8.Decoder"
-#define SEC_OMX_COMPONENT_VP8_DEC_ROLE "video_decoder.vpx"
+#define EXYNOS_OMX_COMPONENT_VP8_DEC      "OMX.Exynos.VP8.Decoder"
+#define EXYNOS_OMX_COMPONENT_VP8_DEC_ROLE "video_decoder.vp8"
 
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-OSCL_EXPORT_REF int SEC_OMX_COMPONENT_Library_Register(SECRegisterComponentType **ppSECComponent);
+OSCL_EXPORT_REF int Exynos_OMX_COMPONENT_Library_Register(
+    ExynosRegisterComponentType **ppExynosComponent);
 
 #ifdef __cplusplus
 };

@@ -1,34 +1,31 @@
-WITH_SEC_OMX := true
+WITH_EXYNOS_OMX := true
 
-ifeq ($(WITH_SEC_OMX), true)
+ifeq ($(WITH_EXYNOS_OMX), true)
 
 LOCAL_PATH := $(call my-dir)
 BOARD_USE_ANB := true
 
 include $(CLEAR_VARS)
 
-SEC_OMX_TOP := $(LOCAL_PATH)
+EXYNOS_OMX_TOP := $(LOCAL_PATH)
 
-SEC_COPY_HEADERS_TO := libsecmm
+EXYNOS_OMX_INC := $(EXYNOS_OMX_TOP)/include/
+EXYNOS_OMX_COMPONENT := $(EXYNOS_OMX_TOP)/component
 
-SEC_OMX_INC := $(SEC_OMX_TOP)/include/
-SEC_OMX_COMPONENT := $(SEC_OMX_TOP)/component
+include $(EXYNOS_OMX_TOP)/osal/Android.mk
+include $(EXYNOS_OMX_TOP)/core/Android.mk
 
-include $(SEC_OMX_TOP)/osal/Android.mk
-include $(SEC_OMX_TOP)/core/Android.mk
-
-include $(SEC_OMX_COMPONENT)/common/Android.mk
-include $(SEC_OMX_COMPONENT)/video/dec/Android.mk
-include $(SEC_OMX_COMPONENT)/video/dec/h264/Android.mk
-include $(SEC_OMX_COMPONENT)/video/dec/mpeg4/Android.mk
-include $(SEC_OMX_COMPONENT)/video/dec/vc1/Android.mk
-include $(SEC_OMX_COMPONENT)/video/enc/Android.mk
-include $(SEC_OMX_COMPONENT)/video/enc/h264/Android.mk
-include $(SEC_OMX_COMPONENT)/video/enc/mpeg4/Android.mk
+include $(EXYNOS_OMX_COMPONENT)/common/Android.mk
+include $(EXYNOS_OMX_COMPONENT)/video/dec/Android.mk
+include $(EXYNOS_OMX_COMPONENT)/video/dec/h264/Android.mk
+include $(EXYNOS_OMX_COMPONENT)/video/dec/mpeg4/Android.mk
+include $(EXYNOS_OMX_COMPONENT)/video/enc/Android.mk
+include $(EXYNOS_OMX_COMPONENT)/video/enc/h264/Android.mk
+include $(EXYNOS_OMX_COMPONENT)/video/enc/mpeg4/Android.mk
 
 ifeq ($(BOARD_USE_ALP_AUDIO), true)
-include $(SEC_OMX_COMPONENT)/audio/dec/Android.mk
-include $(SEC_OMX_COMPONENT)/audio/dec/mp3/Android.mk
+include $(EXYNOS_OMX_COMPONENT)/audio/dec/Android.mk
+include $(EXYNOS_OMX_COMPONENT)/audio/dec/mp3/Android.mk
 endif
 
 endif

@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2010 Samsung Electronics S.LSI Co. LTD
+ * Copyright 2012 Samsung Electronics S.LSI Co. LTD
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
  * @author      Yunji Kim (yunji.kim@samsung.com)
  * @version     1.1.0
  * @history
- *   2011.10.18 : Create
+ *   2012.02.28 : Create
  */
 
 #include <stdio.h>
@@ -29,27 +29,27 @@
 #include <string.h>
 #include <dlfcn.h>
 
-#include "SEC_OSAL_Memory.h"
-#include "SEC_OSAL_ETC.h"
+#include "Exynos_OSAL_Memory.h"
+#include "Exynos_OSAL_ETC.h"
 #include "library_register.h"
 
-#undef  SEC_LOG_TAG
-#define SEC_LOG_TAG    "SEC_MP3_DEC"
-#define SEC_LOG_OFF
-#include "SEC_OSAL_Log.h"
+#undef  EXYNOS_LOG_TAG
+#define EXYNOS_LOG_TAG    "EXYNOS_MP3_DEC"
+#define EXYNOS_LOG_OFF
+#include "Exynos_OSAL_Log.h"
 
 
-OSCL_EXPORT_REF int SEC_OMX_COMPONENT_Library_Register(SECRegisterComponentType **ppSECComponent)
+OSCL_EXPORT_REF int Exynos_OMX_COMPONENT_Library_Register(ExynosRegisterComponentType **ppExynosComponent)
 {
     FunctionIn();
 
-    if (ppSECComponent == NULL)
+    if (ppExynosComponent == NULL)
         goto EXIT;
 
     /* component 1 - audio decoder MP3 */
-    SEC_OSAL_Strcpy(ppSECComponent[0]->componentName, SEC_OMX_COMPONENT_MP3_DEC);
-    SEC_OSAL_Strcpy(ppSECComponent[0]->roles[0], SEC_OMX_COMPONENT_MP3_DEC_ROLE);
-    ppSECComponent[0]->totalRoleNum = MAX_COMPONENT_ROLE_NUM;
+    Exynos_OSAL_Strcpy(ppExynosComponent[0]->componentName, EXYNOS_OMX_COMPONENT_MP3_DEC);
+    Exynos_OSAL_Strcpy(ppExynosComponent[0]->roles[0], EXYNOS_OMX_COMPONENT_MP3_DEC_ROLE);
+    ppExynosComponent[0]->totalRoleNum = MAX_COMPONENT_ROLE_NUM;
 
 EXIT:
     FunctionOut();

@@ -4,11 +4,11 @@ include $(CLEAR_VARS)
 LOCAL_MODULE_TAGS := optional
 
 LOCAL_SRC_FILES := \
-	SEC_OMX_Vp8dec.c \
+	Exynos_OMX_Vp8dec.c \
 	library_register.c
 
 LOCAL_PRELINK_MODULE := false
-LOCAL_MODULE := libOMX.SEC.VP8.Decoder
+LOCAL_MODULE := libOMX.Exynos.VP8.Decoder
 LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)/omx
 
 LOCAL_CFLAGS :=
@@ -23,31 +23,26 @@ endif
 
 LOCAL_ARM_MODE := arm
 
-LOCAL_STATIC_LIBRARIES := libSEC_OMX_Vdec libsecosal libsecbasecomponent \
-	libseccscapi
-LOCAL_SHARED_LIBRARIES := libc libdl libcutils libutils libui \
-	libSEC_OMX_Resourcemanager
+LOCAL_STATIC_LIBRARIES := libExynosOMX_Vdec libExynosOMX_OSAL libExynosOMX_Basecomponent \
+	libswconverter libExynosVideoApi
+LOCAL_SHARED_LIBRARIES := libc libdl libcutils libutils liblog libui \
+	libExynosOMX_Resourcemanager libcsc libexynosv4l2 libion_exynos libexynosgscaler \
+	libhardware
 
-ifeq ($(TARGET_SOC),exynos4x12)
-LOCAL_SHARED_LIBRARIES += libsecmfcdecapi libsecmfcencapi
-else
-LOCAL_STATIC_LIBRARIES += libsecmfcapi
+ifeq ($(BOARD_USES_MFC_FPS),true)
+LOCAL_CFLAGS += -DCONFIG_MFC_FPS
 endif
 
-ifeq ($(filter-out exynos4,$(TARGET_BOARD_PLATFORM)),)
-LOCAL_SHARED_LIBRARIES += libhwconverter
-endif
+LOCAL_C_INCLUDES := $(EXYNOS_OMX_INC)/khronos \
+	$(EXYNOS_OMX_INC)/exynos \
+	$(EXYNOS_OMX_TOP)/osal \
+	$(EXYNOS_OMX_TOP)/core \
+	$(EXYNOS_OMX_COMPONENT)/common \
+	$(EXYNOS_OMX_COMPONENT)/video/dec \
+	hardware/samsung_slsi/exynos5/include \
+	hardware/samsung_slsi/exynos5/libcsc \
+	hardware/samsung_slsi/exynos5/exynos_omx/codecs/exynos_codecs/video/exynos5/mfc_v4l2/include
 
-#ifeq ($(BOARD_USE_V4L2_ION),true)
-#LOCAL_SHARED_LIBRARIES += libion
-#endif
 
-LOCAL_C_INCLUDES := $(OMX_INC) \
-	$(SEC_OMX_INC)/sec \
-	$(SEC_OMX_TOP)/osal \
-	$(SEC_OMX_TOP)/core \
-	$(SEC_OMX_COMPONENT)/common \
-	$(SEC_OMX_COMPONENT)/video/dec \
-	$(TARGET_OUT_HEADERS)/$(SEC_COPY_HEADERS_TO)
 
 include $(BUILD_SHARED_LIBRARY)

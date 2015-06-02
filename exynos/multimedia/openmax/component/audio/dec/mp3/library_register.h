@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2010 Samsung Electronics S.LSI Co. LTD
+ * Copyright 2012 Samsung Electronics S.LSI Co. LTD
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,15 +21,15 @@
  * @author      Yunji Kim (yunji.kim@samsung.com)
  * @version     1.1.0
  * @history
- *   2011.10.18 : Create
+ *   2012.02.28 : Create
  */
 
-#ifndef SEC_OMX_MP3_DEC_REG
-#define SEC_OMX_MP3_DEC_REG
+#ifndef EXYNOS_OMX_MP3_DEC_REG
+#define EXYNOS_OMX_MP3_DEC_REG
 
-#include "SEC_OMX_Def.h"
+#include "Exynos_OMX_Def.h"
 #include "OMX_Component.h"
-#include "SEC_OMX_Component_Register.h"
+#include "Exynos_OMX_Component_Register.h"
 
 
 #define OSCL_EXPORT_REF __attribute__((visibility("default")))
@@ -37,18 +37,18 @@
 #define MAX_COMPONENT_ROLE_NUM    1
 
 /* MP3 */
-#define SEC_OMX_COMPONENT_MP3_DEC         "OMX.SEC.MP3.Decoder"
-#define SEC_OMX_COMPONENT_MP3_DEC_ROLE    "audio_decoder.mp3"
+#define EXYNOS_OMX_COMPONENT_MP3_DEC         "OMX.Exynos.MP3.Decoder"
+#define EXYNOS_OMX_COMPONENT_MP3_DEC_ROLE    "audio_decoder.mp3"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-OSCL_EXPORT_REF int SEC_OMX_COMPONENT_Library_Register(SECRegisterComponentType **ppSECComponent);
+OSCL_EXPORT_REF int Exynos_OMX_COMPONENT_Library_Register(ExynosRegisterComponentType **ppExynosComponent);
 
 #ifdef __cplusplus
 };
 #endif
 
-#endif /* SEC_OMX_MP3_DEC_REG */
+#endif /* EXYNOS_OMX_MP3_DEC_REG */
 

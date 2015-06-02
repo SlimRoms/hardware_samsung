@@ -4,40 +4,39 @@ include $(CLEAR_VARS)
 LOCAL_MODULE_TAGS := optional
 
 LOCAL_SRC_FILES := \
-	SEC_OMX_Basecomponent.c \
-	SEC_OMX_Baseport.c
+	Exynos_OMX_Basecomponent.c \
+	Exynos_OMX_Baseport.c
 
-LOCAL_MODULE := libsecbasecomponent
+LOCAL_MODULE := libExynosOMX_Basecomponent
 
 LOCAL_CFLAGS :=
 
-LOCAL_STATIC_LIBRARIES := libsecosal
+LOCAL_STATIC_LIBRARIES := libExynosOMX_OSAL
 LOCAL_SHARED_LIBRARIES := libcutils libutils
 
-LOCAL_C_INCLUDES := $(OMX_INC) \
-	$(SEC_OMX_INC)/sec \
-	$(SEC_OMX_TOP)/osal
+LOCAL_C_INCLUDES := $(EXYNOS_OMX_INC)/khronos \
+	$(EXYNOS_OMX_INC)/exynos \
+	$(EXYNOS_OMX_TOP)/osal
 
 include $(BUILD_STATIC_LIBRARY)
-
 
 include $(CLEAR_VARS)
 
 LOCAL_MODULE_TAGS := optional
 
 LOCAL_SRC_FILES := \
-	SEC_OMX_Resourcemanager.c
+	Exynos_OMX_Resourcemanager.c
 
 LOCAL_PRELINK_MODULE := false
-LOCAL_MODULE := libSEC_OMX_Resourcemanager
+LOCAL_MODULE := libExynosOMX_Resourcemanager
 
 LOCAL_CFLAGS :=
 
-LOCAL_STATIC_LIBRARIES := libsecosal
+LOCAL_STATIC_LIBRARIES := libExynosOMX_OSAL
 LOCAL_SHARED_LIBRARIES := libcutils libutils
 
-LOCAL_C_INCLUDES := $(OMX_INC) \
-	$(SEC_OMX_INC)/sec \
-	$(SEC_OMX_TOP)/osal
+LOCAL_C_INCLUDES := $(EXYNOS_OMX_INC)/khronos \
+	$(EXYNOS_OMX_INC)/exynos \
+	$(EXYNOS_OMX_TOP)/osal
 
 include $(BUILD_SHARED_LIBRARY)

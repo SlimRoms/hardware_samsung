@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2010 Samsung Electronics S.LSI Co. LTD
+ * Copyright 2012 Samsung Electronics S.LSI Co. LTD
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@
  * @file        library_register.c
  * @brief
  * @author      SeungBeom Kim (sbcrux.kim@samsung.com)
- * @version     1.1.0
+ * @version     2.0.0
  * @history
- *   2010.7.15 : Create
+ *   2012.02.20 : Create
  */
 
 #include <stdio.h>
@@ -29,27 +29,27 @@
 #include <string.h>
 #include <dlfcn.h>
 
-#include "SEC_OSAL_Memory.h"
-#include "SEC_OSAL_ETC.h"
+#include "Exynos_OSAL_Memory.h"
+#include "Exynos_OSAL_ETC.h"
 #include "library_register.h"
-#include "SEC_OSAL_Log.h"
+#include "Exynos_OSAL_Log.h"
 
 
-OSCL_EXPORT_REF int SEC_OMX_COMPONENT_Library_Register(SECRegisterComponentType **secComponents)
+OSCL_EXPORT_REF int Exynos_OMX_COMPONENT_Library_Register(ExynosRegisterComponentType **exynosComponents)
 {
-	FunctionIn();
+    FunctionIn();
 
-	if (secComponents == NULL)
-		goto EXIT;
+    if (exynosComponents == NULL)
+        goto EXIT;
 
-	/* component 1 - video decoder H.264 */
-	SEC_OSAL_Strcpy(secComponents[0]->componentName, SEC_OMX_COMPONENT_H264_ENC);
-	SEC_OSAL_Strcpy(secComponents[0]->roles[0], SEC_OMX_COMPONENT_H264_ENC_ROLE);
-	secComponents[0]->totalRoleNum = MAX_COMPONENT_ROLE_NUM;
+    /* component 1 - video decoder H.264 */
+    Exynos_OSAL_Strcpy(exynosComponents[0]->componentName, EXYNOS_OMX_COMPONENT_H264_ENC);
+    Exynos_OSAL_Strcpy(exynosComponents[0]->roles[0], EXYNOS_OMX_COMPONENT_H264_ENC_ROLE);
+    exynosComponents[0]->totalRoleNum = MAX_COMPONENT_ROLE_NUM;
 
 EXIT:
-	FunctionOut();
+    FunctionOut();
 
-	return MAX_COMPONENT_NUM;
+    return MAX_COMPONENT_NUM;
 }
 
