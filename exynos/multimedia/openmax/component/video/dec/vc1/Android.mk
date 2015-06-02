@@ -29,7 +29,7 @@ endif
 LOCAL_ARM_MODE := arm
 
 LOCAL_STATIC_LIBRARIES := libSEC_OMX_Vdec libsecosal libsecbasecomponent \
-	libseccscapi
+	libswconverter
 LOCAL_SHARED_LIBRARIES := libc libdl libcutils libutils libui \
 	libSEC_OMX_Resourcemanager
 
