@@ -24,9 +24,9 @@ endif
 LOCAL_ARM_MODE := arm
 
 LOCAL_STATIC_LIBRARIES := libExynosOMX_Vdec libExynosOMX_OSAL libExynosOMX_Basecomponent \
-	libswconverter libExynosVideoApi
+	libswconverter libsecmfcapi
 LOCAL_SHARED_LIBRARIES := libc libdl libcutils libutils liblog libui \
-	libExynosOMX_Resourcemanager libcsc libexynosv4l2 libion_exynos libhardware \
+	libExynosOMX_Resourcemanager libcsc libexynosv4l2 libsecion libhardware \
 	
 ifeq ($(TARGET_BOARD_PLATFORM),exynos5)
 LOCAL_SHARED_LIBRARIES += libexynosgscaler
@@ -42,9 +42,9 @@ LOCAL_C_INCLUDES := $(EXYNOS_OMX_INC)/khronos \
 	$(EXYNOS_OMX_TOP)/core \
 	$(EXYNOS_OMX_COMPONENT)/common \
 	$(EXYNOS_OMX_COMPONENT)/video/dec \
-	hardware/samsung_slsi/exynos5/include \
-	hardware/samsung_slsi/exynos5/libcsc \
-	hardware/samsung_slsi/exynos5/exynos_omx/codecs/exynos_codecs/video/exynos5/mfc_v4l2/include
+	hardware/samsung/exynos4/hal/include \
+	hardware/samsung/exynos4/hal/libcsc \
+	hardware/samsung/exynos/multimedia/codecs/video/exynos4/mfc_v4l2/include
 
 
 

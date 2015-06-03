@@ -17,9 +17,9 @@ LOCAL_C_INCLUDES := $(EXYNOS_OMX_INC)/khronos \
 	$(EXYNOS_OMX_TOP)/core \
 	$(EXYNOS_OMX_COMPONENT)/common \
 	$(EXYNOS_OMX_COMPONENT)/video/enc \
-	hardware/samsung_slsi/exynos5/include \
-	hardware/samsung_slsi/exynos5/libcsc \
-	hardware/samsung_slsi/exynos5/exynos_omx/codecs/exynos_codecs/video/exynos5/mfc_v4l2/include
+	hardware/samsung/exynos4/hal/include \
+	hardware/samsung/exynos4/hal/libcsc \
+	hardware/samsung/exynos/multimedia/codecs/video/exynos4/mfc_v4l2/include
 
 ifeq ($(BOARD_USE_METADATABUFFERTYPE), true)
 LOCAL_CFLAGS += -DUSE_METADATABUFFERTYPE
