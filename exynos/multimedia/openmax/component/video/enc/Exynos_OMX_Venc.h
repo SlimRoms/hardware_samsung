@@ -33,7 +33,7 @@
 #include "Exynos_OSAL_Queue.h"
 #include "Exynos_OMX_Baseport.h"
 #include "Exynos_OMX_Basecomponent.h"
-#include "ExynosVideoApi.h"
+#include "SsbSipMfcApi.h"
 
 #define MAX_VIDEO_INPUTBUFFER_NUM    5
 #define MAX_VIDEO_OUTPUTBUFFER_NUM   4

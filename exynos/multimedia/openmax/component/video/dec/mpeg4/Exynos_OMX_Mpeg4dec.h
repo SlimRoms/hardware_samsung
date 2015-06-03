@@ -31,7 +31,7 @@
 #include "Exynos_OMX_Def.h"
 #include "OMX_Component.h"
 #include "OMX_Video.h"
-#include "ExynosVideoApi.h"
+#include "SsbSipMfcApi.h"
 
 
 typedef enum _CODEC_TYPE

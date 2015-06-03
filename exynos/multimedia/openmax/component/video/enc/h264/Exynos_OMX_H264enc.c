@@ -38,7 +38,7 @@
 #include "Exynos_OSAL_Android.h"
 #include "library_register.h"
 #include "Exynos_OMX_H264enc.h"
-#include "ExynosVideoApi.h"
+#include "SsbSipMfcApi.h"
 #include "Exynos_OSAL_SharedMemory.h"
 #include "Exynos_OSAL_Event.h"
 

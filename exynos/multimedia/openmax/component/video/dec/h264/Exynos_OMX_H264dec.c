@@ -37,7 +37,7 @@
 #include "Exynos_OSAL_Thread.h"
 #include "library_register.h"
 #include "Exynos_OMX_H264dec.h"
-#include "ExynosVideoApi.h"
+#include "SsbSipMfcApi.h"
 #include "Exynos_OSAL_SharedMemory.h"
 #include "Exynos_OSAL_Event.h"
 
