@@ -37,7 +37,7 @@
 #include <sys/mman.h>
 
 #include "Exynos_OSAL_SharedMemory.h"
-#include "ion.h"
+#include "secion.h"
 
 #define EXYNOS_LOG_OFF
 #include "Exynos_OSAL_Log.h"

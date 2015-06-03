@@ -48,7 +48,7 @@
 #include "Exynos_OMX_Venc.h"
 #include "Exynos_OSAL_Android.h"
 #include "exynos_format.h"
-#include "ion.h"
+#include "secion.h"
 
 #undef  EXYNOS_LOG_TAG
 #define EXYNOS_LOG_TAG    "Exynos_OSAL_Android"
