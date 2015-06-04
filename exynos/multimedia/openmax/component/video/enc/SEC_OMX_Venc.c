@@ -36,7 +36,7 @@
 #include "SEC_OSAL_Mutex.h"
 #include "SEC_OSAL_Semaphore.h"
 #include "SEC_OSAL_ETC.h"
-#include "color_space_convertor.h"
+#include "swconverter.h"
 
 #ifdef USE_STOREMETADATA
 #include "SEC_OSAL_Android.h"

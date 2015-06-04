@@ -42,7 +42,7 @@
 #include "SEC_OMX_Wmvdec.h"
 #include "SsbSipMfcApi.h"
 #include "SEC_OSAL_Event.h"
-#include "color_space_convertor.h"
+#include "swconverter.h"
 
 #ifdef USE_ANB
 #include "SEC_OSAL_Android.h"
