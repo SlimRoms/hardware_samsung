@@ -16,7 +16,7 @@ LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)
 LOCAL_C_INCLUDES := \
     system/core/include \
     $(LOCAL_PATH)/../include \
-    $(LOCAL_PATH)/../../../exynos/multimedia/openmax/include/khronos \
+    $(OMX_INC) \
     $(LOCAL_PATH)/../../../exynos/multimedia/openmax/include/$(OMX_NAME)
 
 LOCAL_CFLAGS := \
@@ -41,7 +41,7 @@ LOCAL_SRC_FILES := \
 LOCAL_C_INCLUDES := \
 	$(LOCAL_PATH)/../include \
 	$(LOCAL_PATH)/../libexynosutils \
-	$(LOCAL_PATH)/../../../exynos/multimedia/openmax/include/khronos \
+	$(OMX_INC) \
 	$(LOCAL_PATH)/../../../exynos/multimedia/openmax/include/$(OMX_NAME)
 
 
