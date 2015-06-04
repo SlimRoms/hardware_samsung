@@ -704,7 +704,7 @@ OMX_BOOL SEC_Preprocessor_InputData(OMX_COMPONENTTYPE *pOMXComponent)
             previousFrameEOF = OMX_FALSE;
         }
         if ((pSECComponent->bUseFlagEOF == OMX_TRUE) &&
-           !(inputUseBuffer->nFlags & OMX_BUFFERFLAG_CODECCONFIG)) {
+            (inputUseBuffer->nFlags & OMX_BUFFERFLAG_CODECCONFIG) != OMX_BUFFERFLAG_CODECCONFIG) {
             flagEOF = OMX_TRUE;
             checkedSize = checkInputStreamLen;
         } else {
