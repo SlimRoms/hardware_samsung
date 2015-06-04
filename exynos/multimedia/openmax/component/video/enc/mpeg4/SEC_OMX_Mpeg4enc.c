@@ -40,7 +40,7 @@
 #include "library_register.h"
 #include "SEC_OMX_Mpeg4enc.h"
 #include "SsbSipMfcApi.h"
-#include "color_space_convertor.h"
+#include "swconverter.h"
 
 #undef  SEC_LOG_TAG
 #define SEC_LOG_TAG    "SEC_MPEG4_ENC"
