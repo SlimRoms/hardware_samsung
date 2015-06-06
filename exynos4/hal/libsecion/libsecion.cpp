@@ -38,16 +38,16 @@ struct ion_allocation_data {
     size_t align;
     unsigned int heap_mask;
     unsigned int flags;
-    ion_handle *handle;
+    ion_handle handle;
 };
 
 struct ion_fd_data {
-    ion_handle *handle;
+    ion_handle handle;
     int fd;
 };
 
 struct ion_handle_data {
-    ion_handle *handle;
+    ion_handle handle;
 };
 
 struct ion_custom_data {
