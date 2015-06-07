@@ -500,7 +500,7 @@ static int alloc_device_alloc(alloc_device_t* dev, int w, int h, int format,
         switch (format) {
         case HAL_PIXEL_FORMAT_EXYNOS_YV12: //0x32315659
             l_usage |= GRALLOC_USAGE_HW_FIMC1;
-            ALOGD("%s added GRALLOC_USAGE_HW_FIMC1 because of YV12", __func__);
+            ALOGD("%s added GRALLOC_USAGE_HW_FIMC1 because of EXYNOS YV12", __func__);
 
         case 0x200:
         case 0x201:
@@ -576,7 +576,30 @@ static int alloc_device_alloc(alloc_device_t* dev, int w, int h, int format,
             }
         }
 
-    } else {
+    }
+    else if(format == HAL_PIXEL_FORMAT_YV12 ||
+     format == HAL_PIXEL_FORMAT_YCrCb_420_SP) {
+
+     	/* FIXME: there is no way to return the vstride */
+        int vstride=0;
+
+        switch (format) {
+        	case HAL_PIXEL_FORMAT_YV12:
+        		stride = EXYNOS4_ALIGN(w, 16); //(w + 15) & ~15;
+        		ALOGD("framework format %s used")
+        		break;
+        	case HAL_PIXEL_FORMAT_YCrCb_420_SP:
+        		stride = w;
+        		ALOGD("framework format %s used")
+        		break;
+        	default:
+            	return -EINVAL;
+        }
+        size = stride * h * 3 / 2;
+
+    
+    }
+    else {
         ALOGD_IF(debug_level > 0, "%s about to get bpp", __func__);
         bpp = get_bpp(format);
         if (bpp == 0)
