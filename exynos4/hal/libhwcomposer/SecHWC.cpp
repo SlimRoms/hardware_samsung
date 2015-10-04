@@ -24,8 +24,10 @@
  *
  */
 
-#include <cutils/log.h>
 #include <cutils/atomic.h>
+#include <cutils/iosched_policy.h>
+#include <cutils/log.h>
+#include <cutils/threads.h>
 
 #include <EGL/egl.h>
 #include <fcntl.h>
@@ -955,7 +957,7 @@ static void *hwc_vsync_sysfs_loop(void *data)
     vsync_timestamp_fd = open("/sys/devices/platform/samsung-pd.2/s3cfb.0/vsync_time", O_RDONLY);
     char thread_name[64] = "hwcVsyncThread";
     prctl(PR_SET_NAME, (unsigned long) &thread_name, 0, 0, 0);
-    setpriority(PRIO_PROCESS, 0, -20);
+    androidSetThreadPriority(0, -20);
     memset(buf, 0, sizeof(buf));
     
     SEC_HWC_Log(HWC_LOG_DEBUG,"Using sysfs mechanism for VSYNC notification");
@@ -1003,7 +1005,8 @@ static void *hwc_vsync_thread(void *data)
     char uevent_desc[4096];
 
     memset(uevent_desc, 0, sizeof(uevent_desc));
-    setpriority(PRIO_PROCESS, 0, HAL_PRIORITY_URGENT_DISPLAY);
+    androidSetThreadPriority(0, HAL_PRIORITY_URGENT_DISPLAY);
+    android_set_rt_ioprio(0, 1);
     uevent_init();
 
     while(true) {
