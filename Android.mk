@@ -39,3 +39,7 @@ ifeq ($(BOARD_VENDOR),samsung)
 include $(SAM_ROOT)/ril/Android.mk
 BOARD_HARDWARE_CLASS := $(SAM_ROOT)/cmhw
 endif
+
+ifneq ($(filter xmm6260 xmm6262 xmm6360 xmm7260 m7450,$(BOARD_MODEM_TYPE)),)
+include $(SAM_ROOT)/modemloader/Android.mk
+endif
