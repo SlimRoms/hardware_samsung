@@ -39,6 +39,7 @@ ifeq ($(BOARD_VENDOR),samsung)
 BOARD_HARDWARE_CLASS := $(SAM_ROOT)/cmhw
 
 include $(SAM_ROOT)/consumerir/Android.mk
+include $(SAM_ROOT)/dtbhtool/Android.mk
 include $(SAM_ROOT)/liblights/Android.mk
 include $(SAM_ROOT)/modemloader/Android.mk
 include $(SAM_ROOT)/power/Android.mk
