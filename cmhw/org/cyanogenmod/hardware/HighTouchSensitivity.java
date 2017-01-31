@@ -18,7 +18,7 @@ package org.cyanogenmod.hardware;
 
 import android.util.Log;
 
-import org.cyanogenmod.internal.util.FileUtils;
+import org.slim.utils.FileUtils;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

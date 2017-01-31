@@ -18,7 +18,7 @@
 package org.cyanogenmod.hardware;
 
 import cyanogenmod.hardware.DisplayMode;
-import org.cyanogenmod.internal.util.FileUtils;
+import import org.slim.utils.FileUtils;
 
 import java.util.Arrays;
 

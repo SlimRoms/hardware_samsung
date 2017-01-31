@@ -31,7 +31,7 @@ import android.preference.PreferenceScreen;
 import android.util.Log;
 
 import com.cyanogenmod.settings.device.R;
-import org.cyanogenmod.internal.util.FileUtils;
+import org.slim.utils.FileUtils;
 
 public class ScreenFragmentActivity extends PreferenceFragment {
 
